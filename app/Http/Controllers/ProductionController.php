@@ -28,7 +28,7 @@ class ProductionController extends Controller
 
         $activeDepartment = session('selected_department_code', auth()->user()->department_code);
 
-        // Fetch process targets for the active Netto department for the current month
+        // Fetch process targets for the active Lilin department for the current month
         $processTargets = \App\Models\ProcessTarget::where('month', date('n'))
             ->where('year', date('Y'))
             ->where('department_code', $activeDepartment)
@@ -75,7 +75,7 @@ class ProductionController extends Controller
             'item_code' => 'nullable|string',
             'heat_number' => 'nullable|string',
 
-            // Netto (Process) fields
+            // Lilin (Process) fields
             'process_id' => 'nullable|integer',
             'process_name' => 'nullable|string',
 
@@ -84,7 +84,7 @@ class ProductionController extends Controller
 
             'cycle_time_minutes' => 'nullable|integer|min:0',
             'cycle_time_seconds' => 'nullable|integer|min:0|max:59',
-            'target_qty' => 'nullable|integer|min:0', // Passed from frontend for Netto
+            'target_qty' => 'nullable|integer|min:0', // Passed from frontend for Lilin
 
             'actual_qty' => 'required|integer|min:0',
             'remark' => 'nullable|string|max:50',
@@ -118,8 +118,8 @@ class ProductionController extends Controller
 
         $workHours = round($workSeconds / 3600, 2);
 
-        $isNettoDepartment = session('selected_department_code', auth()->user()->department_code) &&
-            str_starts_with(session('selected_department_code', auth()->user()->department_code), '403.');
+        $isLilinDepartment = session('selected_department_code', auth()->user()->department_code) &&
+            str_starts_with(session('selected_department_code', auth()->user()->department_code), '402.');
 
         $itemCode = null;
         $heatNumber = null;
@@ -128,8 +128,8 @@ class ProductionController extends Controller
         $actualQty = (int) $validated['actual_qty'];
         $heatNumberDetails = null;
 
-        if ($isNettoDepartment && $validated['process_id']) {
-            // --- NETTO LOGIC (Process Based) ---
+        if ($isLilinDepartment && $validated['process_id']) {
+            // --- LILIN LOGIC (Process Based) ---
             $processTarget = \App\Models\ProcessTarget::findOrFail($validated['process_id']);
 
             // Override Item Code to be the Process Name so that reports group them properly
@@ -147,7 +147,7 @@ class ProductionController extends Controller
             // --- BUBUT LOGIC (Heat Number & Item Based) ---
             if (!$validated['item_code']) {
                 throw ValidationException::withMessages([
-                    'item_code' => 'Item Code is required for non-Netto departments.',
+                    'item_code' => 'Item Code is required for non-Lilin departments.',
                 ]);
             }
 
@@ -191,7 +191,7 @@ class ProductionController extends Controller
 
             'operator_code' => $this->normalizeCode($operator->code),
             'machine_code' => $this->normalizeCode($machine->code),
-            'item_code' => $itemCode, // Process Name if Netto, Item Code if Bubut
+            'item_code' => $itemCode, // Process Name if Lilin, Item Code if Bubut
             'heat_number' => $heatNumber,
             'size' => $heatNumberDetails ? $heatNumberDetails->size : null,
             'customer' => $heatNumberDetails ? $heatNumberDetails->customer : null,

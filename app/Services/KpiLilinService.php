@@ -5,7 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Collection;
 use App\Models\MdItemMirror;
 
-class KpiNettoService
+class KpiLilinService
 {
     /**
      * =====================================

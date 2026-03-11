@@ -1,6 +1,6 @@
 import os, base64, secrets
 
-env_path = '/srv/docker/apps/kpi-netto/.env'
+env_path = '/srv/docker/apps/kpi-lilin/.env'
 
 # Read current .env
 with open(env_path, 'r') as f:

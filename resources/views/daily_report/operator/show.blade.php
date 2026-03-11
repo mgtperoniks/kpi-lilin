@@ -37,7 +37,7 @@
                 @csrf
                 <input type="hidden" name="date" value="{{ $date }}">
                 <button type="submit"
-                    class="inline-flex items-center justify-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                    class="inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -109,7 +109,7 @@
                         {{-- Shift - Sortable --}}
                         <th class="px-4 py-3 text-center w-16">
                             <a href="{{ getSortUrl('shift', $currentSort, $currentDirection, $date) }}"
-                                class="flex items-center justify-center gap-1 hover:text-emerald-600 transition-colors {{ isSorted('shift', $currentSort) ? 'text-emerald-600 font-bold' : '' }}">
+                                class="flex items-center justify-center gap-1 hover:text-green-600 transition-colors {{ isSorted('shift', $currentSort) ? 'text-green-600 font-bold' : '' }}">
                                 Shift
                                 <span class="text-xs">{{ getSortArrow('shift', $currentSort, $currentDirection) }}</span>
                             </a>
@@ -118,7 +118,7 @@
                         {{-- Operator - Sortable --}}
                         <th class="px-4 py-3">
                             <a href="{{ getSortUrl('operator', $currentSort, $currentDirection, $date) }}"
-                                class="flex items-center gap-1 hover:text-emerald-600 transition-colors {{ isSorted('operator', $currentSort) ? 'text-emerald-600 font-bold' : '' }}">
+                                class="flex items-center gap-1 hover:text-green-600 transition-colors {{ isSorted('operator', $currentSort) ? 'text-green-600 font-bold' : '' }}">
                                 Operator
                                 <span class="text-xs">{{ getSortArrow('operator', $currentSort, $currentDirection) }}</span>
                             </a>
@@ -127,7 +127,7 @@
                         {{-- Mesin - Sortable --}}
                         <th class="px-4 py-3">
                             <a href="{{ getSortUrl('machine', $currentSort, $currentDirection, $date) }}"
-                                class="flex items-center gap-1 hover:text-emerald-600 transition-colors {{ isSorted('machine', $currentSort) ? 'text-emerald-600 font-bold' : '' }}">
+                                class="flex items-center gap-1 hover:text-green-600 transition-colors {{ isSorted('machine', $currentSort) ? 'text-green-600 font-bold' : '' }}">
                                 Mesin
                                 <span class="text-xs">{{ getSortArrow('machine', $currentSort, $currentDirection) }}</span>
                             </a>
@@ -139,7 +139,7 @@
                         {{-- Jam Kerja - Sortable --}}
                         <th class="px-4 py-3 text-right">
                             <a href="{{ getSortUrl('work_hours', $currentSort, $currentDirection, $date) }}"
-                                class="flex items-center justify-end gap-1 hover:text-emerald-600 transition-colors {{ isSorted('work_hours', $currentSort) ? 'text-emerald-600 font-bold' : '' }}">
+                                class="flex items-center justify-end gap-1 hover:text-green-600 transition-colors {{ isSorted('work_hours', $currentSort) ? 'text-green-600 font-bold' : '' }}">
                                 Jam Kerja
                                 <span
                                     class="text-xs">{{ getSortArrow('work_hours', $currentSort, $currentDirection) }}</span>
@@ -149,7 +149,7 @@
                         {{-- Target - Sortable --}}
                         <th class="px-4 py-3 text-right">
                             <a href="{{ getSortUrl('target', $currentSort, $currentDirection, $date) }}"
-                                class="flex items-center justify-end gap-1 hover:text-emerald-600 transition-colors {{ isSorted('target', $currentSort) ? 'text-emerald-600 font-bold' : '' }}">
+                                class="flex items-center justify-end gap-1 hover:text-green-600 transition-colors {{ isSorted('target', $currentSort) ? 'text-green-600 font-bold' : '' }}">
                                 Target
                                 <span class="text-xs">{{ getSortArrow('target', $currentSort, $currentDirection) }}</span>
                             </a>
@@ -158,7 +158,7 @@
                         {{-- Aktual - Sortable --}}
                         <th class="px-4 py-3 text-right">
                             <a href="{{ getSortUrl('actual', $currentSort, $currentDirection, $date) }}"
-                                class="flex items-center justify-end gap-1 hover:text-emerald-600 transition-colors {{ isSorted('actual', $currentSort) ? 'text-emerald-600 font-bold' : '' }}">
+                                class="flex items-center justify-end gap-1 hover:text-green-600 transition-colors {{ isSorted('actual', $currentSort) ? 'text-green-600 font-bold' : '' }}">
                                 Aktual
                                 <span class="text-xs">{{ getSortArrow('actual', $currentSort, $currentDirection) }}</span>
                             </a>
@@ -167,7 +167,7 @@
                         {{-- KPI (%) - Sortable --}}
                         <th class="px-4 py-3 text-center">
                             <a href="{{ getSortUrl('kpi', $currentSort, $currentDirection, $date) }}"
-                                class="flex items-center justify-center gap-1 hover:text-emerald-600 transition-colors {{ isSorted('kpi', $currentSort) ? 'text-emerald-600 font-bold' : '' }}">
+                                class="flex items-center justify-center gap-1 hover:text-green-600 transition-colors {{ isSorted('kpi', $currentSort) ? 'text-green-600 font-bold' : '' }}">
                                 KPI (%)
                                 <span class="text-xs">{{ getSortArrow('kpi', $currentSort, $currentDirection) }}</span>
                             </a>
@@ -179,7 +179,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse ($rows as $row)
-                        <tr class="odd:bg-white even:bg-gray-50 hover:bg-emerald-50 transition-colors duration-150">
+                        <tr class="odd:bg-white even:bg-gray-50 hover:bg-green-50 transition-colors duration-150">
                             <td class="px-4 py-4 text-center font-bold text-gray-600">
                                 {{ $row->shift }}
                             </td>
@@ -194,13 +194,13 @@
                             <td class="px-4 py-4">
                                 <div class="font-medium text-gray-900">{{ $row->item->name ?? $row->item_code }}</div>
                                 @if($row->heat_number)
-                                    <div class="text-xs text-emerald-600 font-mono mt-0.5">HN: {{ $row->heat_number }}</div>
+                                    <div class="text-xs text-green-600 font-mono mt-0.5">HN: {{ $row->heat_number }}</div>
                                 @endif
                                 @if($row->remark)
                                     <div class="text-xs text-red-500 italic mt-1">{{ $row->remark }}</div>
                                 @endif
                                 @if($row->note)
-                                    <div class="text-xs text-emerald-600 italic mt-1">{{ $row->note }}</div>
+                                    <div class="text-xs text-green-600 italic mt-1">{{ $row->note }}</div>
                                 @endif
                             </td>
                             <td class="px-4 py-4 text-right font-mono text-gray-600">
@@ -234,7 +234,7 @@
                                     <div class="flex items-center justify-center gap-1">
                                         {{-- Edit Button --}}
                                         <a href="{{ route('daily_report.operator.edit', $row->id) }}"
-                                            class="text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 p-2 rounded-full transition-colors"
+                                            class="text-green-500 hover:text-green-700 hover:bg-green-50 p-2 rounded-full transition-colors"
                                             title="Edit Data">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

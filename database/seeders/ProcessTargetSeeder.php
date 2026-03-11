@@ -14,7 +14,7 @@ class ProcessTargetSeeder extends Seeder
      */
     public function run(): void
     {
-        // Netto Flange (403.1.1)
+        // Cetak Lilin (402.2.1)
         $flangeProcesses = [
             'HAND DRILL FL',
             'BLASTING FL',
@@ -23,7 +23,7 @@ class ProcessTargetSeeder extends Seeder
             'LAS ARGON FL',
         ];
 
-        // Netto Fitting (403.2.1)
+        // Rangkai Lilin (402.2.2)
         $fittingProcesses = [
             'GERINDA HALUS PF',
             'GERINDA KASAR PF',
@@ -37,10 +37,10 @@ class ProcessTargetSeeder extends Seeder
             'POTONG RESIBON PF',
         ];
 
-        // Insert unique processes for Flange (403.1.1)
+        // Insert unique processes for Cetak Lilin (402.2.1)
         foreach ($flangeProcesses as $process) {
             DB::table('process_targets')->insertOrIgnore([
-                'department_code' => '403.1.1',
+                'department_code' => '402.2.1',
                 'process_name' => $process,
                 'month' => date('n'),
                 'year' => date('Y'),
@@ -50,10 +50,10 @@ class ProcessTargetSeeder extends Seeder
             ]);
         }
 
-        // Insert unique processes for Fitting (403.2.1)
+        // Insert unique processes for Rangkai Lilin (402.2.2)
         foreach ($fittingProcesses as $process) {
             DB::table('process_targets')->insertOrIgnore([
-                'department_code' => '403.2.1',
+                'department_code' => '402.2.2',
                 'process_name' => $process,
                 'month' => date('n'),
                 'year' => date('Y'),

@@ -34,7 +34,7 @@ class SettingController extends Controller
         $activeDepartment = session('selected_department_code', auth()->user()->department_code);
 
         // Auto-copy targets from previous month if empty for the selected month
-        if ($targets->isEmpty() && !$isLocked && str_starts_with($activeDepartment, '403.')) {
+        if ($targets->isEmpty() && !$isLocked && str_starts_with($activeDepartment, '402.')) {
             $previousMonth = $selectedMonth == 1 ? 12 : $selectedMonth - 1;
             $previousYear = $selectedMonth == 1 ? $selectedYear - 1 : $selectedYear;
 

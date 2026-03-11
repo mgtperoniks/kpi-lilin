@@ -23,9 +23,9 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            // Check if user has access to kpi-netto
+            // Check if user has access to kpi-lilin
             $allowedApps = $user->allowed_apps ?? [];
-            if (!in_array('kpi-netto', $allowedApps) && $user->role !== 'direktur') {
+            if (!in_array('kpi-lilin', $allowedApps) && $user->role !== 'direktur') {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'You do not have access to this application.',

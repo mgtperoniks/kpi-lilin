@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h4>KPI Netto — Shift {{ $shift }} ({{ $date }})</h4>
+    <h4>KPI Lilin — Shift {{ $shift }} ({{ $date }})</h4>
 
     <div class="row mt-3">
         <div class="col-md-4">

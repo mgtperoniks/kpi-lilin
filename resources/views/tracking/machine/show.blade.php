@@ -10,7 +10,7 @@
             <p class="text-gray-500">Laporan detail kinerja mesin harian</p>
         </div>
         <a href="{{ route('tracking.mesin.index', ['date' => $summary->kpi_date]) }}"
-            class="flex items-center text-emerald-600 hover:text-emerald-800 font-medium transition-colors">
+            class="flex items-center text-green-600 hover:text-green-800 font-medium transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd"
                     d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
@@ -89,7 +89,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse($activities as $act)
-                        <tr class="hover:bg-emerald-50 transition-colors duration-150 group">
+                        <tr class="hover:bg-green-50 transition-colors duration-150 group">
                             <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-600">
                                 {{ \Carbon\Carbon::parse($act->time_start)->format('H:i') }} -
                                 {{ \Carbon\Carbon::parse($act->time_end)->format('H:i') }}

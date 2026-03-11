@@ -57,20 +57,20 @@
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Dari Tanggal</label>
                     <input type="date" name="start_date" id="start_date" value="{{ request('start_date', $startDate) }}"
-                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-1.5">
+                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-1.5">
                 </div>
 
                 {{-- End Date --}}
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Sampai Tanggal</label>
                     <input type="date" name="end_date" id="end_date" value="{{ request('end_date', $endDate) }}"
-                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-1.5">
+                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-1.5">
                 </div>
 
                 {{-- Operator Dropdown --}}
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Operator</label>
-                    <select name="operator_code" id="operator_code" class="select2-search block w-48 shadow-sm text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-1.5">
+                    <select name="operator_code" id="operator_code" class="select2-search block w-48 shadow-sm text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-1.5">
                         <option value="all">Semua Operator</option>
                         @foreach($operatorNames as $code => $name)
                             <option value="{{ $code }}" {{ request('operator_code', $selectedOperator) == $code ? 'selected' : '' }}>
@@ -82,7 +82,7 @@
 
                 {{-- Buttons --}}
                 <div class="flex">
-                    <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wide rounded-md transition-colors shadow-sm h-fit">
+                    <button type="submit" class="px-4 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold uppercase tracking-wide rounded-md transition-colors shadow-sm h-fit">
                         Filter
                     </button>
                 </div>
@@ -118,7 +118,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse ($rows as $row)
-                        <tr class="odd:bg-white even:bg-gray-50 hover:bg-emerald-50 transition-colors duration-150">
+                        <tr class="odd:bg-white even:bg-gray-50 hover:bg-green-50 transition-colors duration-150">
                             <td class="px-6 py-4 font-medium text-gray-600 whitespace-nowrap">
                                 {{ \Carbon\Carbon::parse($row->kpi_date)->format('d/m/Y') }}
                             </td>
@@ -151,7 +151,7 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <a href="{{ url('/tracking/operator/' . $row->operator_code . '/' . $row->kpi_date) }}"
-                                   class="text-emerald-600 hover:text-emerald-900 font-medium text-xs uppercase tracking-wide">
+                                   class="text-green-600 hover:text-green-900 font-medium text-xs uppercase tracking-wide">
                                     Detail
                                 </a>
                             </td>

@@ -30,16 +30,16 @@
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Dari Tanggal</label>
                     <input type="date" name="start_date" id="start_date" value="{{ request('start_date', $startDate) }}"
-                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-1.5">
+                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-1.5">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Sampai Tanggal</label>
                     <input type="date" name="end_date" id="end_date" value="{{ request('end_date', $endDate) }}"
-                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-1.5">
+                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-1.5">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Operator</label>
-                    <select name="operator_code" id="operator_code" class="select2-search block w-56 shadow-sm text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-1.5">
+                    <select name="operator_code" id="operator_code" class="select2-search block w-56 shadow-sm text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-1.5">
                         <option value="all">Semua Operator</option>
                         @foreach($operatorNames as $code => $name)
                             <option value="{{ $code }}" {{ request('operator_code', $selectedOperator) == $code ? 'selected' : '' }}>
@@ -49,7 +49,7 @@
                     </select>
                 </div>
                 <div class="flex">
-                    <button type="submit" class="px-5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wide rounded-md transition-colors shadow-sm h-fit inline-flex items-center gap-2">
+                    <button type="submit" class="px-5 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold uppercase tracking-wide rounded-md transition-colors shadow-sm h-fit inline-flex items-center gap-2">
                         <span class="material-icons-round text-sm">auto_graph</span>
                         Generate
                     </button>
@@ -75,11 +75,11 @@
 
             <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-4 text-xs text-slate-500">
                 <div class="flex items-center gap-1.5">
-                    <span class="material-icons-round text-sm text-emerald-500">people</span>
+                    <span class="material-icons-round text-sm text-green-500">people</span>
                     <span><strong>{{ count($chartDatasets) }}</strong> operator ditampilkan</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                    <span class="material-icons-round text-sm text-emerald-500">date_range</span>
+                    <span class="material-icons-round text-sm text-green-500">date_range</span>
                     <span><strong>{{ count($chartLabels) }}</strong> hari data</span>
                 </div>
                 <div class="flex items-center gap-1.5">
@@ -88,7 +88,7 @@
                 </div>
                 <div class="flex items-center gap-1.5">
                     <span style="display:inline-block;width:18px;height:2px;border-top:2px dashed rgba(34,197,94,0.7);vertical-align:middle;"></span>
-                    <span class="text-emerald-600 font-semibold">Trendline (Regresi Linear)</span>
+                    <span class="text-green-600 font-semibold">Trendline (Regresi Linear)</span>
                 </div>
             </div>
         @else

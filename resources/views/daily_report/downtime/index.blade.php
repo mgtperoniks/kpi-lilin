@@ -22,7 +22,7 @@
         <div class="flex flex-col gap-3">
             @foreach($dates as $row)
                 <a href="{{ route('daily_report.downtime.show', $row->downtime_date) }}"
-                    class="group bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md hover:border-emerald-400 transition-all duration-200 flex items-center justify-between">
+                    class="group bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md hover:border-green-400 transition-all duration-200 flex items-center justify-between">
 
                     <div class="flex items-center gap-4">
                         <div
@@ -31,7 +31,7 @@
                                 class="text-xs font-bold uppercase">{{ \Carbon\Carbon::parse($row->downtime_date)->locale('id')->isoFormat('MMM') }}</span>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800 group-hover:text-emerald-700">
+                            <h3 class="text-lg font-bold text-gray-800 group-hover:text-green-700">
                                 {{ \Carbon\Carbon::parse($row->downtime_date)->locale('id')->isoFormat('dddd, D MMMM Y') }}
                             </h3>
                             <p class="text-xs text-gray-400 font-mono">
@@ -68,7 +68,7 @@
                             @endif
                         </div>
                         <div class="pl-4">
-                            <svg class="w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-colors" fill="none"
+                            <svg class="w-5 h-5 text-gray-300 group-hover:text-green-500 transition-colors" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>

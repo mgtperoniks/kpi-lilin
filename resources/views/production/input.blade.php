@@ -7,8 +7,8 @@
 
         {{-- Header --}}
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-gray-800">Input Produksi Netto</h1>
-            <p class="text-sm text-slate-500">Departemen Netto • KPI Tracking</p>
+            <h1 class="text-2xl font-bold text-gray-800">Input Produksi Lilin</h1>
+            <p class="text-sm text-slate-500">Departemen Lilin • KPI Tracking</p>
         </div>
 
         {{-- Form Section --}}
@@ -18,7 +18,7 @@
             {{-- Section 1: Waktu & Shift ( 1 Row, 4 Columns ) --}}
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="flex items-center gap-2 mb-6 border-b border-slate-50 pb-4">
-                    <span class="material-icons-round text-emerald-500">calendar_today</span>
+                    <span class="material-icons-round text-green-500">calendar_today</span>
                     <h2 class="font-bold text-lg text-slate-700">Waktu & Shift</h2>
                 </div>
 
@@ -27,14 +27,14 @@
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tanggal</label>
                         <input type="date" name="production_date" value="{{ date('Y-m-d', strtotime('-1 day')) }}"
-                            class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm p-3 font-medium text-slate-700">
+                            class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700">
                     </div>
 
                     {{-- Shift --}}
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Shift</label>
                         <select name="shift" required
-                            class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm p-3 font-medium text-slate-700">
+                            class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700">
                             <option value="1">Shift 1 (07:00-15:00)</option>
                             <option value="2">Shift 2 (15:00-23:00)</option>
                             <option value="3">Shift 3 (23:00-07:00)</option>
@@ -46,14 +46,14 @@
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Waktu Mulai</label>
                         <input type="time" name="time_start" x-model="timeStart" @change="calculateTarget" required
-                            class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm p-3 font-medium text-slate-700">
+                            class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700">
                     </div>
 
                     {{-- Waktu Selesai --}}
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Waktu Selesai</label>
                         <input type="time" name="time_end" x-model="timeEnd" @change="calculateTarget" required
-                            class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm p-3 font-medium text-slate-700">
+                            class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700">
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
             {{-- Section 2: Sumber Daya ( 1 Row, 2 Columns ) --}}
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="flex items-center gap-2 mb-6 border-b border-slate-50 pb-4">
-                    <span class="material-icons-round text-emerald-500">group_work</span>
+                    <span class="material-icons-round text-green-500">group_work</span>
                     <h2 class="font-bold text-lg text-slate-700">Sumber Daya</h2>
                 </div>
 
@@ -72,7 +72,7 @@
                         <div class="relative">
                             <input type="text" x-model="operatorSearch" @input.debounce.300ms="searchOperators"
                                 placeholder="Cari Operator..."
-                                class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm p-3 font-medium text-slate-700 pl-10">
+                                class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700 pl-10">
                             <span
                                 class="material-icons-round absolute left-3 top-3 text-slate-400 text-lg">person_search</span>
                             <input type="hidden" name="operator_code" x-model="selectedOperatorCode" required>
@@ -83,14 +83,14 @@
                             style="display: none;">
                             <template x-for="op in operatorList" :key="op.code">
                                 <div @click="selectOperator(op)"
-                                    class="p-3 hover:bg-emerald-50 cursor-pointer border-b border-slate-50 last:border-none">
+                                    class="p-3 hover:bg-green-50 cursor-pointer border-b border-slate-50 last:border-none">
                                     <p class="text-sm font-bold text-slate-700" x-text="op.name"></p>
                                     <p class="text-xs text-slate-400" x-text="op.code"></p>
                                 </div>
                             </template>
                         </div>
                         <div x-show="selectedOperatorName"
-                            class="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-1">
+                            class="text-xs text-green-600 font-bold flex items-center gap-1 mt-1">
                             <span class="material-icons-round text-sm">check_circle</span>
                             <span x-text="selectedOperatorName"></span>
                         </div>
@@ -102,7 +102,7 @@
                         <div class="relative">
                             <input type="text" x-model="machineSearch" @input.debounce.300ms="searchMachines"
                                 placeholder="Cari Mesin..."
-                                class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm p-3 font-medium text-slate-700 pl-10"
+                                class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700 pl-10"
                                 autocomplete="off">
                             <span
                                 class="material-icons-round absolute left-3 top-3 text-slate-400 text-lg">precision_manufacturing</span>
@@ -114,7 +114,7 @@
                             style="display: none;">
                             <template x-for="machine in machineList" :key="machine.code">
                                 <div @click="selectMachine(machine)"
-                                    class="p-3 hover:bg-emerald-50 cursor-pointer border-b border-slate-50 last:border-none">
+                                    class="p-3 hover:bg-green-50 cursor-pointer border-b border-slate-50 last:border-none">
                                     <p class="text-sm font-bold text-slate-700" x-text="machine.name"></p>
                                     <div class="flex gap-2 text-xs text-slate-400">
                                         <span x-text="machine.code"></span>
@@ -130,7 +130,7 @@
             {{-- Section 3: Proses & Hasil --}}
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="flex items-center gap-2 mb-6 border-b border-slate-50 pb-4">
-                    <span class="material-icons-round text-emerald-500">inventory_2</span>
+                    <span class="material-icons-round text-green-500">inventory_2</span>
                     <h2 class="font-bold text-lg text-slate-700">Proses & Hasil</h2>
                 </div>
 
@@ -142,7 +142,7 @@
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Proses
                                 Produksi</label>
                             <select name="process_id" required x-model="selectedProcessId" @change="onProcessChange"
-                                class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm p-3 font-medium text-slate-700">
+                                class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700">
                                 <option value="" disabled selected>Pilih Proses...</option>
                                 @foreach($processTargets as $pt)
                                     <option value="{{ $pt->id }}" data-target="{{ $pt->target_qty }}"
@@ -170,11 +170,11 @@
 
                     {{-- Hasil (Manual) --}}
                     <div class="space-y-1.5">
-                        <label class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Hasil
+                        <label class="text-[10px] font-bold text-green-600 uppercase tracking-wider">Hasil
                             (OK)</label>
                         <input type="number" name="actual_qty" x-model="actualQty" @input="calculateAchievement" required
                             min="0"
-                            class="w-full bg-white border-emerald-300 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 text-center font-bold text-emerald-700 text-lg p-3"
+                            class="w-full bg-white border-green-300 rounded-xl focus:ring-4 focus:ring-green-100 focus:border-green-500 text-center font-bold text-green-700 text-lg p-3"
                             placeholder="0">
                     </div>
                 </div>
@@ -187,7 +187,7 @@
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Keterangan
                             (Opsional)</label>
                         <select name="remark"
-                            class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm p-3 font-medium text-slate-700">
+                            class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700">
                             <option value="" selected>Normal (Selesai)</option>
                         </select>
                     </div>
@@ -197,7 +197,7 @@
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Capaian</label>
                         <div class="w-full rounded-xl text-center font-bold text-lg p-3 border"
                             :class="{
-                                                                                                                                        'bg-emerald-50 text-emerald-600 border-emerald-200': achievement >= 100,
+                                                                                                                                        'bg-green-50 text-green-600 border-green-200': achievement >= 100,
                                                                                                                                         'bg-amber-50 text-amber-600 border-amber-200': achievement >= 80 && achievement < 100,
                                                                                                                                         'bg-red-50 text-red-600 border-red-200': achievement < 80
                                                                                                                                     }">
@@ -211,7 +211,7 @@
                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Catatan
                         (Opsional)</label>
                     <input type="text" name="note"
-                        class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm p-3 font-medium text-slate-700"
+                        class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700"
                         placeholder="Keterangan tambahan...">
                 </div>
 
@@ -228,7 +228,7 @@
                 </div>
             @else
                 <button type="button" @click="confirmSubmit"
-                    class="w-full bg-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 hover:bg-emerald-700 active:scale-95 transition-transform">
+                    class="w-full bg-green-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-green-500/30 flex items-center justify-center gap-2 hover:bg-green-700 active:scale-95 transition-transform">
                     <span class="material-icons-round">save_alt</span>
                     Simpan Data Produksi
                 </button>
@@ -415,7 +415,7 @@
                                                                                         </div>
                                                                                         <div class="flex justify-between pt-1">
                                                                                             <span class="font-medium">Hasil Output:</span>
-                                                                                            <span class="font-bold text-emerald-600 text-lg">${this.actualQty} PCS</span>
+                                                                                            <span class="font-bold text-green-600 text-lg">${this.actualQty} PCS</span>
                                                                                         </div>
                                                                                     </div>
                                                                                 `;

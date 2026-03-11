@@ -16,21 +16,21 @@
 
     {{-- Filter Bulan & Tahun --}}
     <form action="{{ route('settings.index') }}" method="GET" class="flex items-center gap-2 bg-white p-2 rounded-xl border border-gray-200 shadow-sm">
-        <select name="month" class="bg-gray-50 border-gray-200 rounded-lg text-sm focus:ring-emerald-500 focus:border-emerald-500">
+        <select name="month" class="bg-gray-50 border-gray-200 rounded-lg text-sm focus:ring-green-500 focus:border-green-500">
             @for($m = 1; $m <= 12; $m++)
                 <option value="{{ $m }}" {{ $selectedMonth == $m ? 'selected' : '' }}>
                     {{ date('F', mktime(0, 0, 0, $m, 1)) }}
                 </option>
             @endfor
         </select>
-        <select name="year" class="bg-gray-50 border-gray-200 rounded-lg text-sm focus:ring-emerald-500 focus:border-emerald-500">
+        <select name="year" class="bg-gray-50 border-gray-200 rounded-lg text-sm focus:ring-green-500 focus:border-green-500">
             @for($y = date('Y') - 1; $y <= date('Y') + 1; $y++)
                 <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>
                     {{ $y }}
                 </option>
             @endfor
         </select>
-        <button type="submit" class="p-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">
+        <button type="submit" class="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
             <span class="material-icons-round text-sm">search</span>
         </button>
     </form>
@@ -82,7 +82,7 @@
                                     value="{{ old('targets.'.$target->id, $target->target_qty) }}"
                                     min="0"
                                     {{ ($isReadOnly || $isLocked) ? 'readonly' : '' }}
-                                    class="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-3 pr-12 sm:text-sm border-gray-300 rounded-md py-2 {{ ($isReadOnly || $isLocked) ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : '' }}">
+                                    class="focus:ring-green-500 focus:border-green-500 block w-full pl-3 pr-12 sm:text-sm border-gray-300 rounded-md py-2 {{ ($isReadOnly || $isLocked) ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : '' }}">
                                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                     <span class="text-gray-500 sm:text-sm">PCS</span>
                                 </div>
@@ -93,7 +93,7 @@
 
                 @if(!$isReadOnly && !$isLocked)
                     <div class="mt-8 flex justify-end">
-                        <button type="submit" class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                        <button type="submit" class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             <span class="material-icons-round text-sm mr-2">save</span>
                             Simpan Perubahan
                         </button>

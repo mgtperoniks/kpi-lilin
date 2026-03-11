@@ -1,18 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard KPI Netto')
+@section('title', 'Dashboard KPI Lilin')
 
 @section('content')
 
     @if(isset($empty))
 
-        <x-card title="Dashboard KPI Netto">
+        <x-card title="Dashboard KPI Lilin">
             <p class="text-gray-500">Belum ada data KPI.</p>
         </x-card>
 
     @else
 
-        <x-card title="Dashboard KPI Netto ({{ $date }})">
+        <x-card title="Dashboard KPI Lilin ({{ $date }})">
 
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
 

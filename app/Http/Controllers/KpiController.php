@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use App\Services\KpiNettoService;
+use App\Services\KpiLilinService;
 
 // MASTER MIRROR (READ ONLY)
 use App\Models\MdItem;
@@ -16,10 +16,10 @@ class KpiController extends Controller
 {
     /**
      * ===============================
-     * KPI PER SHIFT (NETTO)
+     * KPI PER SHIFT (LILIN)
      * ===============================
      */
-    public function shift(Request $request, KpiNettoService $service)
+    public function shift(Request $request, KpiLilinService $service)
     {
         /**
          * 1. PARAMETER AMAN

@@ -17,12 +17,12 @@
             <div>
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal</label>
                 <input type="date" name="date" value="{{ request('date') }}"
-                       class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-2 px-3">
+                       class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-2 px-3">
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Aksi</label>
-                <select name="action" class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-2 px-3">
+                <select name="action" class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-2 px-3">
                     <option value="">Semua Aksi</option>
                     <option value="LOGIN" {{ request('action') == 'LOGIN' ? 'selected' : '' }}>LOGIN</option>
                     <option value="CREATE" {{ request('action') == 'CREATE' ? 'selected' : '' }}>CREATE (Penambahan)</option>
@@ -34,10 +34,10 @@
             <div class="flex-1">
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cari User / IP</label>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama User, IP, atau Model..."
-                       class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-2 px-3">
+                       class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-2 px-3">
             </div>
 
-            <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+            <button type="submit" class="px-5 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                 Filter
             </button>
             
@@ -64,7 +64,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                 @forelse($logs as $log)
-                    <tr class="odd:bg-white even:bg-gray-50 hover:bg-emerald-50 transition-colors duration-150">
+                    <tr class="odd:bg-white even:bg-gray-50 hover:bg-green-50 transition-colors duration-150">
                         <td class="px-6 py-4 whitespace-nowrap text-gray-600">
                             {{ $log->created_at->format('d/m/Y H:i:s') }}
                             <div class="text-[10px] text-gray-400">{{ $log->created_at->diffForHumans() }}</div>
@@ -79,7 +79,7 @@
                         <td class="px-6 py-4 text-center">
                             @php
                                 $color = match($log->action) {
-                                    'LOGIN' => 'bg-emerald-100 text-emerald-800',
+                                    'LOGIN' => 'bg-green-100 text-green-800',
                                     'CREATE' => 'bg-green-100 text-green-800',
                                     'DELETE' => 'bg-red-100 text-red-800',
                                     'UPDATE' => 'bg-orange-100 text-orange-800',
@@ -95,7 +95,7 @@
                             @if ($log->details)
                                 <button type="button"
                                     onclick="viewDetail({{ json_encode($log->details) }}, '{{ $log->action }}', '{{ $log->model }}')"
-                                    class="text-emerald-600 hover:text-emerald-800 underline text-xs font-medium focus:outline-none">
+                                    class="text-green-600 hover:text-green-800 underline text-xs font-medium focus:outline-none">
                                     Lihat Data
                                 </button>
                             @else

@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-    Sync Production Databases (kpi_netto & masterdata_kpi) to Local Laragon
+    Sync Production Databases (kpi_lilin & masterdata_kpi) to Local Laragon
     
 .DESCRIPTION
     Script ini akan:
     1. SSH ke server production (10.88.8.46)
-    2. Export database kpi_netto & masterdata_kpi dari container Docker
+    2. Export database kpi_lilin & masterdata_kpi dari container Docker
     3. Download file backup ke lokal
     4. Import otomatis ke MySQL Laragon (Local)
     5. Membersihkan file temporary di server
@@ -27,14 +27,14 @@ $ServerHost = "10.88.8.46"
 $ServerSSH = "$ServerUser@$ServerHost"
 
 # Path di Server
-$ServerAppPath_Netto = "/srv/docker/apps/kpi-netto"
+$ServerAppPath_Lilin = "/srv/docker/apps/kpi-lilin"
 $ServerAppPath_Master = "/srv/docker/apps/masterdatakpi"
 $ServerBackupDir = "/tmp"
 
 # Konfigurasi Lokal
 $LocalDbUser = "root"
 $LocalDbPass = "123456788"
-$LocalBackupDir = "C:\laragon\www\kpi-netto\backups"
+$LocalBackupDir = "C:\laragon\www\kpi-lilin\backups"
 
 # Cari path MySQL Laragon secara dinamis (atau gunakan default jika tidak ketemu)
 $LaragonMysql = "C:\laragon\bin\mysql\mysql-8.4.3-winx64\bin\mysql.exe"
@@ -52,7 +52,7 @@ if (!(Test-Path $LaragonMysql)) {
 # ============================================
 # FUNGSI
 # ============================================
-$DetailedLogFile = "C:\laragon\www\kpi-netto\scripts\sync_log_detail.txt"
+$DetailedLogFile = "C:\laragon\www\kpi-lilin\scripts\sync_log_detail.txt"
 
 function Log-Message($level, $message) {
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
@@ -73,12 +73,12 @@ $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 
 # Target Sync
 $Databases = @(
-    @{ Name = "kpi_netto"; Container = "masterdatakpi-db"; User = "root" },
+    @{ Name = "kpi_lilin"; Container = "masterdatakpi-db"; User = "root" },
     @{ Name = "masterdata_kpi"; Container = "masterdatakpi-db"; User = "root" }
 )
 
 Log-Info "============================================"
-Log-Info "   PRODUCTION TO LOCAL DB SYNC SCRIPT (NETTO)"
+Log-Info "   PRODUCTION TO LOCAL DB SYNC SCRIPT (LILIN)"
 Log-Info "============================================"
 
 # Step 1: Buat direktori backup lokal
@@ -154,10 +154,10 @@ Get-ChildItem "$LocalBackupDir\prod_*.sql" | Where-Object { $_.LastWriteTime -lt
 Log-Info ""
 Log-Info "============================================"
 if ($GlobalSuccess) {
-    Log-Success "   SINKRONISASI NETTO SELESAI - DATA TERBARU!"
+    Log-Success "   SINKRONISASI LILIN SELESAI - DATA TERBARU!"
 }
 else {
-    Log-Error "   SINKRONISASI NETTO SELESAI DENGAN BEBERAPA KEGAGALAN."
+    Log-Error "   SINKRONISASI LILIN SELESAI DENGAN BEBERAPA KEGAGALAN."
     exit 1
 }
 Log-Info "============================================"

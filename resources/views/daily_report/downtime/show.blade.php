@@ -58,7 +58,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse ($rows as $row)
-                        <tr class="odd:bg-white even:bg-gray-50 hover:bg-emerald-50 transition-colors duration-150">
+                        <tr class="odd:bg-white even:bg-gray-50 hover:bg-green-50 transition-colors duration-150">
                             <td class="px-6 py-4">
                                 <div class="font-semibold text-gray-800">{{ $row->machine->name ?? $row->machine_code }}</div>
                                 <div class="text-xs text-gray-400 font-mono">{{ $row->machine_code }}</div>

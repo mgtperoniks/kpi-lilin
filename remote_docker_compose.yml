@@ -1,6 +1,6 @@
 services:
   app:
-    container_name: kpi-netto-app
+    container_name: kpi-lilin-app
     build: .
     restart: always
     ports:

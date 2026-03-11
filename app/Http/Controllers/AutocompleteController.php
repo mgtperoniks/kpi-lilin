@@ -54,10 +54,10 @@ class AutocompleteController extends Controller
 
         $queryBuilder = MdOperatorMirror::where('status', 'active');
 
-        // Buka pencarian untuk semua operator Netto jika departemen aktif adalah Netto
-        if (str_starts_with($activeDepartment, '403.')) {
+        // Buka pencarian untuk semua operator Lilin jika departemen aktif adalah Lilin
+        if (str_starts_with($activeDepartment, '402.')) {
             $queryBuilder->withoutGlobalScope(\App\Models\Scopes\DepartmentScope::class)
-                ->where('department_code', 'like', '403.%');
+                ->where('department_code', 'like', '402.%');
         }
 
         $operators = $queryBuilder->where(function ($q) use ($query) {

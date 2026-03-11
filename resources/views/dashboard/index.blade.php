@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard KPI Netto')
+@section('title', 'Dashboard KPI Lilin')
 
 @section('content')
     {{-- Header Content --}}
     <div class="mb-6 flex justify-between items-center">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">Departemen Netto</h1>
+            <h1 class="text-2xl font-bold text-gray-800">Departemen Lilin</h1>
             <p class="text-sm text-gray-500">Sistem Tracking & Input KPI</p>
         </div>
         <div class="text-right">
@@ -20,9 +20,9 @@
     </div>
 
     {{-- Info / Catatan --}}
-    <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex gap-3 mb-6">
-        <span class="material-icons-round text-emerald-500 text-sm mt-0.5">info</span>
-        <p class="text-xs text-emerald-800 leading-relaxed">
+    <div class="bg-green-50 border border-green-100 p-4 rounded-xl flex gap-3 mb-6">
+        <span class="material-icons-round text-green-500 text-sm mt-0.5">info</span>
+        <p class="text-xs text-green-800 leading-relaxed">
             <span class="font-bold">Catatan:</span> Data yang ditampilkan adalah rekapitulasi tanggal
             <span class="font-bold">{{ \Carbon\Carbon::parse($date)->translatedFormat('d F Y') }}</span>.
         </p>
@@ -35,7 +35,7 @@
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
             <div class="flex justify-between items-start mb-2">
                 <span
-                    class="material-icons-round text-emerald-500 bg-emerald-50 p-2 rounded-lg text-xl">track_changes</span>
+                    class="material-icons-round text-green-500 bg-green-50 p-2 rounded-lg text-xl">track_changes</span>
             </div>
             <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wide">Target Harian</p>
             <div class="flex items-baseline gap-1 mt-1">
@@ -53,7 +53,7 @@
         {{-- Card: Realisasi --}}
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
             <div class="flex justify-between items-start mb-2">
-                <span class="material-icons-round text-emerald-500 bg-emerald-50 p-2 rounded-lg text-xl">bolt</span>
+                <span class="material-icons-round text-green-500 bg-green-50 p-2 rounded-lg text-xl">bolt</span>
             </div>
             <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wide">Realisasi</p>
             <div class="flex items-baseline gap-1 mt-1">
@@ -69,7 +69,7 @@
             @endphp
 
             <div
-                class="mt-3 flex items-center gap-1 text-xs {{ $gap >= 0 ? 'text-emerald-500' : 'text-red-500' }} font-bold">
+                class="mt-3 flex items-center gap-1 text-xs {{ $gap >= 0 ? 'text-green-500' : 'text-red-500' }} font-bold">
                 <span class="material-icons-round text-[14px]">{{ $gap >= 0 ? 'trending_up' : 'trending_down' }}</span>
                 <span>
                     {{ $gap >= 0 ? '+' : '' }}{{ number_format($gap) }} dari target
@@ -89,7 +89,7 @@
                 </h3>
             </div>
             <div
-                class="mt-3 flex items-center gap-1 text-xs {{ $efficiency >= 100 ? 'text-emerald-500' : 'text-orange-500' }} font-bold">
+                class="mt-3 flex items-center gap-1 text-xs {{ $efficiency >= 100 ? 'text-green-500' : 'text-orange-500' }} font-bold">
                 <span class="material-icons-round text-[14px]">auto_awesome</span>
                 <span>{{ $efficiency >= 100 ? 'Sangat Baik' : 'Cukup' }}</span>
             </div>
@@ -98,7 +98,7 @@
         {{-- Card: Overall KPI --}}
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
             <div class="flex justify-between items-start mb-2">
-                <span class="material-icons-round text-emerald-500 bg-emerald-50 p-2 rounded-lg text-xl">donut_large</span>
+                <span class="material-icons-round text-green-500 bg-green-50 p-2 rounded-lg text-xl">donut_large</span>
             </div>
             <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wide">Overall KPI</p>
             <div class="flex items-baseline gap-1 mt-1">
@@ -107,7 +107,7 @@
                 </h3>
             </div>
             <div
-                class="mt-3 flex items-center gap-1 text-xs {{ $overallKpi >= 90 ? 'text-emerald-600' : 'text-orange-500' }} font-bold">
+                class="mt-3 flex items-center gap-1 text-xs {{ $overallKpi >= 90 ? 'text-green-600' : 'text-orange-500' }} font-bold">
                 <span class="material-icons-round text-[14px]">insights</span>
                 <span>{{ $overallKpi >= 90 ? 'On Track' : 'Need Improvement' }}</span>
             </div>
@@ -204,7 +204,7 @@
                                     <span class="text-[10px] text-slate-500">{{ $op->operator_code }}</span>
                                 </div>
                             </div>
-                            <span class="text-xs font-bold text-emerald-600">{{ number_format($op->kpi_percent, 1) }}%</span>
+                            <span class="text-xs font-bold text-green-600">{{ number_format($op->kpi_percent, 1) }}%</span>
                         </div>
                     @endforeach
 

@@ -1,5 +1,5 @@
 @echo off
-set "SCRIPT_DIR=C:\laragon\www\kpi-bubut\scripts"
+set "SCRIPT_DIR=C:\laragon\www\kpi-lilin\scripts"
 set "LOG_FILE=%SCRIPT_DIR%\sync_log.txt"
 
 echo [BATCH] Starting Sync at %date% %time%...

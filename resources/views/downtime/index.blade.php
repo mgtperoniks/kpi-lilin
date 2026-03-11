@@ -60,20 +60,20 @@
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Dari Tanggal</label>
                     <input type="date" name="start_date" id="start_date" value="{{ request('start_date', $startDate) }}"
-                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-1.5">
+                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-1.5">
                 </div>
 
                 {{-- End Date --}}
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Sampai Tanggal</label>
                     <input type="date" name="end_date" id="end_date" value="{{ request('end_date', $endDate) }}"
-                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-1.5">
+                           class="block w-full shadow-sm text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-1.5">
                 </div>
 
                 {{-- Machine Dropdown --}}
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Mesin</label>
-                    <select name="machine_code" id="machine_code" class="select2-search block w-48 shadow-sm text-sm border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 py-1.5">
+                    <select name="machine_code" id="machine_code" class="select2-search block w-48 shadow-sm text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 py-1.5">
                         <option value="all">Semua Mesin</option>
                         @foreach($machineNames as $code => $name)
                             <option value="{{ $code }}" {{ request('machine_code', $selectedMachine) == $code ? 'selected' : '' }}>
@@ -85,7 +85,7 @@
 
                 {{-- Buttons --}}
                 <div class="flex">
-                    <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wide rounded-md transition-colors shadow-sm h-fit">
+                    <button type="submit" class="px-4 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold uppercase tracking-wide rounded-md transition-colors shadow-sm h-fit">
                         Filter
                     </button>
                 </div>
@@ -102,7 +102,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                 @forelse($summary as $row)
-                    <tr class="odd:bg-white even:bg-gray-50 hover:bg-emerald-50 transition-colors duration-150">
+                    <tr class="odd:bg-white even:bg-gray-50 hover:bg-green-50 transition-colors duration-150">
                         <td class="px-6 py-4">
                             <div class="font-semibold text-gray-800">{{ $machineNames[$row->machine_code] ?? $row->machine_code }}</div>
                             <div class="text-xs text-gray-400 font-mono">{{ $row->machine_code }}</div>
@@ -145,7 +145,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                 @forelse($list as $row)
-                    <tr class="odd:bg-white even:bg-gray-50 hover:bg-emerald-50 transition-colors duration-150">
+                    <tr class="odd:bg-white even:bg-gray-50 hover:bg-green-50 transition-colors duration-150">
                         <td class="px-6 py-4 whitespace-nowrap text-gray-600">
                              {{ \Carbon\Carbon::parse($row->downtime_date)->format('d/m/Y') }}
                         </td>
