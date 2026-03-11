@@ -127,51 +127,65 @@
                 </div>
             </div>
 
-            {{-- Section 3: Proses & Hasil --}}
+            {{-- Section 3: Item & Hasil --}}
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="flex items-center gap-2 mb-6 border-b border-slate-50 pb-4">
                     <span class="material-icons-round text-green-500">inventory_2</span>
-                    <h2 class="font-bold text-lg text-slate-700">Proses & Hasil</h2>
+                    <h2 class="font-bold text-lg text-slate-700">Item & Hasil</h2>
                 </div>
 
-                <div class="space-y-6">
-                    {{-- Row 1: Proses (1 Column) --}}
+                <div class="space-y-4">
+                    {{-- Row: Item & Size --}}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {{-- Process Dropdown --}}
+
+                        {{-- Pilih Item --}}
                         <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Proses
-                                Produksi</label>
-                            <select name="process_id" required x-model="selectedProcessId" @change="onProcessChange"
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Pilih Item</label>
+                            <select x-model="selectedItem" @change="onItemChange"
                                 class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700">
-                                <option value="" disabled selected>Pilih Proses...</option>
-                                @foreach($processTargets as $pt)
-                                    <option value="{{ $pt->id }}" data-target="{{ $pt->target_qty }}"
-                                        data-name="{{ $pt->process_name }}">
-                                        {{ $pt->process_name }}
-                                    </option>
+                                <option value="" disabled selected>Pilih Item...</option>
+                                @foreach(array_keys($groupedItems) as $itemName)
+                                    <option value="{{ $itemName }}">{{ $itemName }}</option>
                                 @endforeach
                             </select>
-                            <input type="hidden" name="process_name" x-model="selectedProcessName">
-                            <p class="text-[10px] text-amber-600 font-medium mt-1">
-                                <span class="material-icons-round text-[10px] align-middle">info</span>
-                                Pastikan pilih <strong>FL</strong> untuk Flange dan <strong>PF</strong> untuk Fitting.
-                            </p>
+                        </div>
+
+                        {{-- Pilih Size (dinamis) --}}
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Pilih Size /
+                                Ukuran</label>
+                            <select x-model="selectedSizeId" @change="onSizeChange" :disabled="!selectedItem"
+                                class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700 disabled:opacity-40">
+                                <option value="" disabled selected>-- Pilih item dulu --</option>
+                                <template x-for="size in availableSizes" :key="size.id">
+                                    <option :value="size.id" :data-target="size.target_qty" :data-name="size.process_name"
+                                        :data-unit="size.unit"
+                                        x-text="size.size_name + ' (target: ' + size.target_qty + ' ' + size.unit + '/7jam)'">
+                                    </option>
+                                </template>
+                            </select>
                         </div>
                     </div>
 
+                    {{-- Hidden fields for backend --}}
+                    <input type="hidden" name="process_id" x-model="selectedProcessId">
+                    <input type="hidden" name="process_name" x-model="selectedProcessName">
+
                     {{-- Target (Auto) --}}
                     <div class="space-y-1.5">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Target
-                            (Auto)</label>
-                        <input type="number" readonly x-model="targetQty" name="target_qty"
-                            class="w-full bg-slate-100 border-transparent rounded-xl text-center font-bold text-slate-600 text-lg p-3 cursor-not-allowed">
-                        <p class="text-[10px] text-center text-slate-400">Target Harian</p>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Target (Auto —
+                            proporsional jam kerja)</label>
+                        <div class="flex items-center gap-3">
+                            <input type="number" readonly x-model="targetQty" name="target_qty"
+                                class="flex-1 bg-slate-100 border-transparent rounded-xl text-center font-bold text-slate-600 text-lg p-3 cursor-not-allowed">
+                            <span class="text-sm font-bold text-slate-500 w-10 text-center" x-text="selectedUnit"></span>
+                        </div>
+                        <p class="text-[10px] text-center text-slate-400">Target disesuaikan dari jam kerja operator</p>
                     </div>
 
                     {{-- Hasil (Manual) --}}
                     <div class="space-y-1.5">
-                        <label class="text-[10px] font-bold text-green-600 uppercase tracking-wider">Hasil
-                            (OK)</label>
+                        <label class="text-[10px] font-bold text-green-600 uppercase tracking-wider">Hasil (OK)</label>
                         <input type="number" name="actual_qty" x-model="actualQty" @input="calculateAchievement" required
                             min="0"
                             class="w-full bg-white border-green-300 rounded-xl focus:ring-4 focus:ring-green-100 focus:border-green-500 text-center font-bold text-green-700 text-lg p-3"
@@ -180,8 +194,7 @@
                 </div>
 
                 {{-- Capaian Row --}}
-                {{-- Keterangan & Capaian --}}
-                <div class="grid grid-cols-2 gap-4 mt-2">
+                <div class="grid grid-cols-2 gap-4 mt-4">
                     {{-- Keterangan Dropdown --}}
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Keterangan
@@ -195,27 +208,27 @@
                     {{-- Capaian --}}
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Capaian</label>
-                        <div class="w-full rounded-xl text-center font-bold text-lg p-3 border"
-                            :class="{
-                                                                                                                                        'bg-green-50 text-green-600 border-green-200': achievement >= 100,
-                                                                                                                                        'bg-amber-50 text-amber-600 border-amber-200': achievement >= 80 && achievement < 100,
-                                                                                                                                        'bg-red-50 text-red-600 border-red-200': achievement < 80
-                                                                                                                                    }">
+                        <div class="w-full rounded-xl text-center font-bold text-lg p-3 border" :class="{
+                                    'bg-green-50 text-green-600 border-green-200': achievement >= 100,
+                                    'bg-amber-50 text-amber-600 border-amber-200': achievement >= 80 && achievement < 100,
+                                    'bg-red-50 text-red-600 border-red-200': achievement < 80
+                                }">
                             <span x-text="achievement + '%'">0%</span>
                         </div>
                     </div>
                 </div>
 
                 {{-- Catatan --}}
-                <div class="space-y-1.5 mt-2">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Catatan
-                        (Opsional)</label>
+                <div class="space-y-1.5 mt-4">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Catatan (Opsional)</label>
                     <input type="text" name="note"
                         class="w-full bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm p-3 font-medium text-slate-700"
                         placeholder="Keterangan tambahan...">
                 </div>
 
             </div>
+
+
 
             {{-- Submit Button --}}
             @if(auth()->user()->isReadOnly())
@@ -257,21 +270,29 @@
 
     {{-- Alpine.js Logic --}}
     <script>
+        // Embedded grouped item/size data from PHP
+        const groupedItemsData = @json($groupedItems);
+
         function productionForm() {
             return {
                 // State
                 timeStart: '',
                 timeEnd: '',
 
-                // Process Selection
+                // Two-level Item → Size selection
+                selectedItem: '',
+                availableSizes: [],
+                selectedSizeId: '',
+
+                // Hidden values for backend
                 selectedProcessId: '',
                 selectedProcessName: '',
+                selectedUnit: '',
 
                 // Operator Search
                 operatorSearch: '',
                 selectedOperatorCode: '',
                 selectedOperatorName: '',
-                operatorList: [],
                 operatorList: [],
                 showOperatorSuggestions: false,
 
@@ -287,11 +308,26 @@
                 actualQty: '',
                 achievement: 0,
 
-                // Actions
-                onProcessChange(e) {
-                    const option = e.target.options[e.target.selectedIndex];
-                    this.selectedProcessName = option.getAttribute('data-name');
-                    this.baseTargetQty = parseInt(option.getAttribute('data-target')) || 0;
+                // --- LEVEL 1: User picks Item ---
+                onItemChange() {
+                    this.availableSizes = groupedItemsData[this.selectedItem] || [];
+                    this.selectedSizeId = '';
+                    this.selectedProcessId = '';
+                    this.selectedProcessName = '';
+                    this.selectedUnit = '';
+                    this.baseTargetQty = 0;
+                    this.targetQty = 0;
+                    this.achievement = 0;
+                },
+
+                // --- LEVEL 2: User picks Size ---
+                onSizeChange() {
+                    const size = this.availableSizes.find(s => s.id == this.selectedSizeId);
+                    if (!size) return;
+                    this.selectedProcessId = size.id;
+                    this.selectedProcessName = size.process_name;
+                    this.selectedUnit = size.unit;
+                    this.baseTargetQty = size.target_qty;
                     this.calculateTarget();
                 },
 
@@ -309,7 +345,7 @@
                     if (diffMinutes <= 0) diffMinutes += 1440; // Cross-day
 
                     const workSeconds = diffMinutes * 60;
-                    const fullShiftSeconds = 7 * 3600;
+                    const fullShiftSeconds = 7 * 3600; // 7 jam = 25200 detik
 
                     this.targetQty = Math.floor((this.baseTargetQty / fullShiftSeconds) * workSeconds);
                     this.calculateAchievement();
@@ -325,7 +361,7 @@
                 selectOperator(op) {
                     this.selectedOperatorCode = op.code;
                     this.selectedOperatorName = op.name;
-                    this.operatorSearch = op.name; // Display Name nice
+                    this.operatorSearch = op.name;
                     this.showOperatorSuggestions = false;
                 },
 
@@ -335,13 +371,12 @@
                     this.machineList = await res.json();
                     this.showMachineSuggestions = true;
                 },
+
                 selectMachine(machine) {
                     this.selectedMachineCode = machine.code;
                     this.machineSearch = machine.name;
                     this.showMachineSuggestions = false;
                 },
-
-
 
                 calculateAchievement() {
                     if (!this.targetQty || this.targetQty <= 0) {
@@ -360,16 +395,11 @@
 
                 // Confirmation Popup
                 confirmSubmit() {
-
-                    // Basic Validation (Check required fields manually if needed, or rely on form validation after check)
-                    // Since we are intercepting, HTML5 required won't trigger on button click automatically if type=button.
-                    // So we check keys manually
-                    // Basic Validation
                     if (!this.selectedOperatorCode || !this.selectedMachineCode || !this.selectedProcessId || !this.timeStart || !this.timeEnd || this.actualQty === '' || this.actualQty === null) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Data Belum Lengkap',
-                            text: 'Mohon lengkapi semua field yang diberi tanda diharuskan.',
+                            text: 'Mohon lengkapi semua field: Operator, Mesin, Item, Size, Waktu, dan Hasil.',
                             confirmButtonColor: '#3b82f6'
                         });
                         return;
@@ -379,7 +409,7 @@
                         Swal.fire({
                             icon: 'warning',
                             title: 'Target Kosong',
-                            text: 'Target proses harian ini 0. Pastikan target di setting terlebih dahulu, atau lanjutkan jika memang tidak ada target.',
+                            text: 'Target untuk item/size ini adalah 0. Pastikan target di Setting telah diisi, atau lanjutkan jika memang tidak ada target.',
                             showCancelButton: true,
                             confirmButtonText: 'Lanjutkan',
                             cancelButtonText: 'Batal',
@@ -394,31 +424,38 @@
                 },
 
                 showConfirmationSummary() {
-
                     const summaryHtml = `
-                                                                                    <div class="text-left text-sm text-slate-600 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                                                                        <div class="flex justify-between border-b border-slate-200 pb-2">
-                                                                                            <span class="font-medium">Operator:</span>
-                                                                                            <span class="font-bold text-slate-800">${this.selectedOperatorName}</span>
-                                                                                        </div>
-                                                                                        <div class="flex justify-between border-b border-slate-200 pb-2">
-                                                                                            <span class="font-medium">Mesin:</span>
-                                                                                            <span class="font-bold text-slate-800">${this.machineSearch}</span>
-                                                                                        </div>
-                                                                                        <div class="flex justify-between border-b border-slate-200 pb-2">
-                                                                                            <span class="font-medium">Proses:</span>
-                                                                                            <span class="font-bold text-slate-800">${this.selectedProcessName}</span>
-                                                                                        </div>
-                                                                                        <div class="flex justify-between border-b border-slate-200 pb-2">
-                                                                                            <span class="font-medium">Waktu:</span>
-                                                                                            <span class="font-bold text-slate-800">${this.timeStart} - ${this.timeEnd}</span>
-                                                                                        </div>
-                                                                                        <div class="flex justify-between pt-1">
-                                                                                            <span class="font-medium">Hasil Output:</span>
-                                                                                            <span class="font-bold text-green-600 text-lg">${this.actualQty} PCS</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                `;
+                        <div class="text-left text-sm text-slate-600 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div class="flex justify-between border-b border-slate-200 pb-2">
+                                <span class="font-medium">Operator:</span>
+                                <span class="font-bold text-slate-800">${this.selectedOperatorName}</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-200 pb-2">
+                                <span class="font-medium">Mesin:</span>
+                                <span class="font-bold text-slate-800">${this.machineSearch}</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-200 pb-2">
+                                <span class="font-medium">Item:</span>
+                                <span class="font-bold text-slate-800">${this.selectedItem}</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-200 pb-2">
+                                <span class="font-medium">Size:</span>
+                                <span class="font-bold text-slate-800">${this.selectedProcessName}</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-200 pb-2">
+                                <span class="font-medium">Waktu:</span>
+                                <span class="font-bold text-slate-800">${this.timeStart} - ${this.timeEnd}</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-200 pb-2">
+                                <span class="font-medium">Target (disesuaikan):</span>
+                                <span class="font-bold text-amber-600">${this.targetQty} ${this.selectedUnit}</span>
+                            </div>
+                            <div class="flex justify-between pt-1">
+                                <span class="font-medium">Hasil Output:</span>
+                                <span class="font-bold text-green-600 text-lg">${this.actualQty} ${this.selectedUnit}</span>
+                            </div>
+                        </div>
+                    `;
 
                     Swal.fire({
                         title: 'Verifikasi Data',

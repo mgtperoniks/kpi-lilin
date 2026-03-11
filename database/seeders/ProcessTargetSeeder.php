@@ -4,62 +4,61 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
 use Illuminate\Support\Facades\DB;
 
 class ProcessTargetSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * Seeds process targets for dept 402.2.1 (Cetak Lilin)
+     * using two-level Item → Size structure.
      */
     public function run(): void
     {
-        // Cetak Lilin (402.2.1)
-        $flangeProcesses = [
-            'HAND DRILL FL',
-            'BLASTING FL',
-            'POTONG FL',
-            'GERINDA KASAR FL',
-            'LAS ARGON FL',
+        $dept = '402.2.1';
+        $month = date('n');
+        $year = date('Y');
+
+        $targets = [
+            // Fitting biasa
+            ['item_name' => 'Fitting biasa', 'size_name' => '1/8"-1/2"', 'target_qty' => 1300, 'unit' => 'PCS'],
+            ['item_name' => 'Fitting biasa', 'size_name' => '3/4"-1"', 'target_qty' => 900, 'unit' => 'PCS'],
+            ['item_name' => 'Fitting biasa', 'size_name' => '1-1/4"-2"', 'target_qty' => 450, 'unit' => 'PCS'],
+            ['item_name' => 'Fitting biasa', 'size_name' => '2-1/2"-4"', 'target_qty' => 250, 'unit' => 'PCS'],
+            ['item_name' => 'Fitting biasa', 'size_name' => '5"-6"', 'target_qty' => 70, 'unit' => 'PCS'],
+            ['item_name' => 'Fitting biasa', 'size_name' => '8"-10"', 'target_qty' => 35, 'unit' => 'PCS'],
+
+            // Fitting Lem
+            ['item_name' => 'Fitting Lem', 'size_name' => '1/2"-1"', 'target_qty' => 400, 'unit' => 'set'],
+            ['item_name' => 'Fitting Lem', 'size_name' => '1-1/4"-2"', 'target_qty' => 300, 'unit' => 'set'],
+            ['item_name' => 'Fitting Lem', 'size_name' => '2-1/2"-4"', 'target_qty' => 125, 'unit' => 'set'],
+
+            // Butt Weld
+            ['item_name' => 'Butt Weld', 'size_name' => '1/2"-1"', 'target_qty' => 600, 'unit' => 'PCS'],
+            ['item_name' => 'Butt Weld', 'size_name' => '1-1/4"-2"', 'target_qty' => 400, 'unit' => 'PCS'],
+            ['item_name' => 'Butt Weld', 'size_name' => '2-1/2"-4"', 'target_qty' => 125, 'unit' => 'PCS'],
+            ['item_name' => 'Butt Weld', 'size_name' => '5"-6"', 'target_qty' => 35, 'unit' => 'PCS'],
+
+            // Flange
+            ['item_name' => 'Flange', 'size_name' => '1/2"-1"', 'target_qty' => 450, 'unit' => 'PCS'],
+            ['item_name' => 'Flange', 'size_name' => '1-1/4"-2"', 'target_qty' => 350, 'unit' => 'PCS'],
+            ['item_name' => 'Flange', 'size_name' => '2-1/2"-4"', 'target_qty' => 250, 'unit' => 'PCS'],
+            ['item_name' => 'Flange', 'size_name' => '5"-6"', 'target_qty' => 175, 'unit' => 'PCS'],
         ];
 
-        // Rangkai Lilin (402.2.2)
-        $fittingProcesses = [
-            'GERINDA HALUS PF',
-            'GERINDA KASAR PF',
-            'POTONG PF',
-            'GERINDA FINISH PF',
-            'GERINDA FLANGE PF',
-            'HAND DRILL PF',
-            'BOR FITTING PF',
-            'BLASTING PF',
-            'GERINDA FLAP PF',
-            'POTONG RESIBON PF',
-        ];
-
-        // Insert unique processes for Cetak Lilin (402.2.1)
-        foreach ($flangeProcesses as $process) {
+        foreach ($targets as $t) {
+            $processName = $t['item_name'] . ' - ' . $t['size_name'];
             DB::table('process_targets')->insertOrIgnore([
-                'department_code' => '402.2.1',
-                'process_name' => $process,
-                'month' => date('n'),
-                'year' => date('Y'),
-                'target_qty' => 0,
+                'department_code' => $dept,
+                'process_name' => $processName,
+                'item_name' => $t['item_name'],
+                'size_name' => $t['size_name'],
+                'unit' => $t['unit'],
+                'month' => $month,
+                'year' => $year,
+                'target_qty' => $t['target_qty'],
                 'created_at' => now(),
-                'updated_at' => now()
-            ]);
-        }
-
-        // Insert unique processes for Rangkai Lilin (402.2.2)
-        foreach ($fittingProcesses as $process) {
-            DB::table('process_targets')->insertOrIgnore([
-                'department_code' => '402.2.2',
-                'process_name' => $process,
-                'month' => date('n'),
-                'year' => date('Y'),
-                'target_qty' => 0,
-                'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
         }
     }

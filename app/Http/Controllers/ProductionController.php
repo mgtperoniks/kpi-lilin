@@ -32,14 +32,33 @@ class ProductionController extends Controller
         $processTargets = \App\Models\ProcessTarget::where('month', date('n'))
             ->where('year', date('Y'))
             ->where('department_code', $activeDepartment)
-            ->orderBy('process_name')
+            ->orderBy('item_name')
+            ->orderBy('size_name')
             ->get();
+
+        // Build grouped structure: { "Fitting biasa": [ { id, size_name, target_qty, unit }, ... ], ... }
+        $groupedItems = [];
+        foreach ($processTargets as $pt) {
+            $itemKey = $pt->item_name ?: $pt->process_name;
+            if (!isset($groupedItems[$itemKey])) {
+                $groupedItems[$itemKey] = [];
+            }
+            $groupedItems[$itemKey][] = [
+                'id' => $pt->id,
+                'size_name' => $pt->size_name ?: '-',
+                'target_qty' => $pt->target_qty,
+                'unit' => $pt->unit ?? 'PCS',
+                'process_name' => $pt->process_name,
+            ];
+        }
 
         return view('production.input', [
             'machines' => $machines,
             'processTargets' => $processTargets,
+            'groupedItems' => $groupedItems,
         ]);
     }
+
 
     /**
      * =================================
