@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-    Sync Production Databases (kpi_lilin & masterdata_kpi) to Local Laragon
+    Sync Production Database (kpi_lilin) to Local Laragon
     
 .DESCRIPTION
     Script ini akan:
     1. SSH ke server production (10.88.8.46)
-    2. Export database kpi_lilin & masterdata_kpi dari container Docker
+    2. Export database kpi_lilin dari container Docker
     3. Download file backup ke lokal
     4. Import otomatis ke MySQL Laragon (Local)
     5. Membersihkan file temporary di server
@@ -27,8 +27,6 @@ $ServerHost = "10.88.8.46"
 $ServerSSH = "$ServerUser@$ServerHost"
 
 # Path di Server
-$ServerAppPath_Lilin = "/srv/docker/apps/kpi-lilin"
-$ServerAppPath_Master = "/srv/docker/apps/masterdatakpi"
 $ServerBackupDir = "/tmp"
 
 # Konfigurasi Lokal
@@ -57,7 +55,7 @@ $DetailedLogFile = "C:\laragon\www\kpi-lilin\scripts\sync_log_detail.txt"
 function Log-Message($level, $message) {
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     $logEntry = "[$timestamp] [$level] $message"
-    Write-Host $logEntry -ForegroundColor ($ifelse = if ($level -eq "ERROR") { "Red" } elseif ($level -eq "SUCCESS") { "Green" } elseif ($level -eq "WARNING") { "Yellow" } else { "Cyan" })
+    Write-Host $logEntry -ForegroundColor (if ($level -eq "ERROR") { "Red" } elseif ($level -eq "SUCCESS") { "Green" } elseif ($level -eq "WARNING") { "Yellow" } else { "Cyan" })
     Add-Content -Path $DetailedLogFile -Value $logEntry
 }
 
@@ -73,8 +71,7 @@ $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 
 # Target Sync
 $Databases = @(
-    @{ Name = "kpi_lilin"; Container = "masterdatakpi-db"; User = "root" },
-    @{ Name = "masterdata_kpi"; Container = "masterdatakpi-db"; User = "root" }
+    @{ Name = "kpi_lilin"; Container = "masterdatakpi-db"; User = "root" }
 )
 
 Log-Info "============================================"
