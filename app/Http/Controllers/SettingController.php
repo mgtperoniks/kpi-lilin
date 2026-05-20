@@ -34,13 +34,29 @@ class SettingController extends Controller
         $activeDepartment = session('selected_department_code', auth()->user()->department_code);
 
         // Auto-copy targets from previous month if empty for the selected month
-        if ($targets->isEmpty() && !$isLocked && str_starts_with($activeDepartment, '402.')) {
+        if ($targets->isEmpty() && str_starts_with($activeDepartment, '402.')) {
             $previousMonth = $selectedMonth == 1 ? 12 : $selectedMonth - 1;
             $previousYear = $selectedMonth == 1 ? $selectedYear - 1 : $selectedYear;
 
+            // 1. Check the immediately previous month for the active department
             $previousTargets = ProcessTarget::where('month', $previousMonth)
                 ->where('year', $previousYear)
+                ->where('department_code', $activeDepartment)
                 ->get();
+
+            // 2. Self-Healing: If the immediate previous month is empty, search for the most recent month with targets for this department
+            if ($previousTargets->isEmpty()) {
+                $latestTarget = ProcessTarget::where('department_code', $activeDepartment)
+                    ->orderBy('year', 'desc')
+                    ->orderBy('month', 'desc')
+                    ->first();
+                if ($latestTarget) {
+                    $previousTargets = ProcessTarget::where('month', $latestTarget->month)
+                        ->where('year', $latestTarget->year)
+                        ->where('department_code', $activeDepartment)
+                        ->get();
+                }
+            }
 
             if ($previousTargets->isNotEmpty()) {
                 foreach ($previousTargets as $pt) {
@@ -49,19 +65,19 @@ class SettingController extends Controller
                         'process_name' => $pt->process_name,
                         'month' => $selectedMonth,
                         'year' => $selectedYear,
-                        'target_qty' => $pt->target_qty
+                        'target_qty' => $pt->target_qty,
+                        'item_name' => $pt->item_name,
+                        'size_name' => $pt->size_name,
+                        'unit' => $pt->unit
                     ]);
                 }
 
                 // Re-fetch after copy
                 $targets = ProcessTarget::where('month', $selectedMonth)
                     ->where('year', $selectedYear)
+                    ->where('department_code', $activeDepartment)
                     ->orderBy('process_name')
                     ->get();
-            } else {
-                // If completely empty (e.g., first time), run the seeder manually for the selected month?
-                // For simplicity, if we seeded the current month, we just instruct admin to fill it. 
-                // Alternatively, we could auto-seed using the same logic from the Seeder if it's completely empty.
             }
         }
 

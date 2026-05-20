@@ -176,6 +176,21 @@ Route::middleware('auth')->group(function () {
     | Settings (Process Targets)
     |--------------------------------------------------------------------------
     */
+    Route::prefix('hr-report')->name('hr_report.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\HrReportController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\HrReportController::class, 'create'])->name('create');
+        Route::post('/store', [\App\Http\Controllers\HrReportController::class, 'store'])->name('store');
+        Route::get('/{id}', [\App\Http\Controllers\HrReportController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [\App\Http\Controllers\HrReportController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\HrReportController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\HrReportController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/pdf', [\App\Http\Controllers\HrReportController::class, 'exportPdf'])->name('pdf');
+        Route::patch('/{id}/status', [\App\Http\Controllers\HrReportController::class, 'updateStatus'])->name('update_status');
+        Route::post('/{id}/submit', [\App\Http\Controllers\HrReportController::class, 'submit'])->name('submit');
+        Route::post('/{id}/approve', [\App\Http\Controllers\HrReportController::class, 'approve'])->name('approve');
+        Route::post('/{id}/reject', [\App\Http\Controllers\HrReportController::class, 'reject'])->name('reject');
+    });
+
     Route::get('/settings', [\App\Http\Controllers\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [\App\Http\Controllers\SettingController::class, 'updateTargets'])->name('settings.update');
 

@@ -57,11 +57,21 @@ class User extends Authenticatable
         ];
     }
 
+    public function isHrAdmin(): bool
+    {
+        return $this->email === 'adminhr@peroniks.com' || $this->role === 'hr_admin';
+    }
+
+    public function isHrManager(): bool
+    {
+        return $this->email === 'managerhr@peroniks.com' || $this->role === 'hr_manager';
+    }
+
     public function isReadOnly(): bool
     {
-        if (in_array($this->email, ['adminhr@peroniks.com', 'managerhr@peroniks.com'])) {
-            return true;
+        if ($this->isHrAdmin() || $this->isHrManager()) {
+            return false;
         }
-        return in_array($this->role, ['auditor', 'hr_admin', 'hr_manager', 'guest']);
+        return in_array($this->role, ['auditor', 'guest']);
     }
 }

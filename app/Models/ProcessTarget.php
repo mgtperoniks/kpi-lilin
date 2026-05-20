@@ -16,5 +16,8 @@ class ProcessTarget extends Model
         'month',
         'year',
         'target_qty',
+        'item_name',
+        'size_name',
+        'unit',
     ];
 }
