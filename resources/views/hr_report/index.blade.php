@@ -72,7 +72,7 @@
                                     class="inline-flex items-center gap-1 hover:text-blue-600 transition-colors '.$isActive.'">
                                     <span>'.$label.'</span>
                                     <span class="material-icons-round text-sm">'.$icon.'</span>
-                                clip_path</a>';
+                                </a>';
                             }
                         @endphp
                         <tr class="bg-gray-50/50 border-b border-gray-100">

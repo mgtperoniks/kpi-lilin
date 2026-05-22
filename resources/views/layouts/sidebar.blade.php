@@ -221,6 +221,19 @@
             <span class="font-medium">Setting</span>
         </a>
 
+        @if(in_array(Auth::user()->role, ['direktur', 'mr', 'admin_dept', 'manager']))
+            @if(!in_array(Auth::user()->role, ['direktur', 'mr']))
+                <div class="mt-6 mb-2 px-3 text-[10px] font-semibold text-green-300 uppercase tracking-wider">HR</div>
+            @endif
+            <a href="{{ route('hr_report.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors {{ request()->routeIs('hr_report.*') ? 'bg-green-600 text-white shadow-lg' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
+                <div class="w-6 flex justify-center">
+                    <span class="material-icons-round text-xl">report_problem</span>
+                </div>
+                <span class="font-medium">Report HR</span>
+            </a>
+        @endif
+
     </nav>
 
 </aside>
