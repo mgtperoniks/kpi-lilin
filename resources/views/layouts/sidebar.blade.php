@@ -128,16 +128,38 @@
             <span class="font-medium">KPI Trend</span>
         </a>
 
-        @if(!$isReadOnly)
+        @php
+            $activeDept = session('selected_department_code', $currUser->department_code);
+            $isGlobalAccess = $isDirekturOrMR || in_array($currUser->role, ['auditor', 'guest']);
+            $showCycleTimeInput = !$isGlobalAccess && ($activeDept === '402.2.1') && !$isReadOnly;
+            $showProcessTargetInput = !$isGlobalAccess && in_array($activeDept, ['402.2.2', '402.2.3']) && !$isReadOnly;
+        @endphp
+
+        @if($showCycleTimeInput || $showProcessTargetInput)
             <div class="mt-6 mb-2 px-3 text-[10px] font-semibold text-green-300 uppercase tracking-wider">Produksi</div>
 
-            <a href="{{ route('production.create') }}"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors {{ request()->routeIs('production.*') ? 'bg-green-600 text-white shadow-lg' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
-                <div class="w-6 flex justify-center">
-                    <span class="material-icons-round text-xl">add_circle</span>
-                </div>
-                <span class="font-medium">Input Produksi</span>
-            </a>
+            @if($showCycleTimeInput)
+                <a href="{{ route('production.create') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors {{ request()->routeIs('production.*') ? 'bg-green-600 text-white shadow-lg' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
+                    <div class="w-6 flex justify-center">
+                        <span class="material-icons-round text-xl">add_circle</span>
+                    </div>
+                    <span class="font-medium">Input Produksi (Cycle Time)</span>
+                </a>
+            @endif
+
+            @if($showProcessTargetInput)
+                <a href="{{ route('production.create') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors {{ request()->routeIs('production.*') ? 'bg-green-600 text-white shadow-lg' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
+                    <div class="w-6 flex justify-center">
+                        <span class="material-icons-round text-xl">add_circle</span>
+                    </div>
+                    <span class="font-medium">Input Produksi (Process Target)</span>
+                </a>
+            @endif
+        @endif
+
+        @if(!$isReadOnly)
 
             <a href="{{ route('reject.create') }}"
                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors {{ request()->routeIs('reject.*') ? 'bg-green-600 text-white shadow-lg' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
@@ -213,13 +235,15 @@
             </a>
         @endif
 
-        <a href="{{ route('settings.index') }}"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors {{ request()->routeIs('settings.*') ? 'bg-green-600 text-white shadow-lg' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
-            <div class="w-6 flex justify-center">
-                <span class="material-icons-round text-xl">settings</span>
-            </div>
-            <span class="font-medium">Setting</span>
-        </a>
+        @if($activeDept !== '402.2.1')
+            <a href="{{ route('settings.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors {{ request()->routeIs('settings.*') ? 'bg-green-600 text-white shadow-lg' : 'text-green-100 hover:bg-white/5 hover:text-white' }}">
+                <div class="w-6 flex justify-center">
+                    <span class="material-icons-round text-xl">settings</span>
+                </div>
+                <span class="font-medium">Setting</span>
+            </a>
+        @endif
 
         @if(in_array(Auth::user()->role, ['direktur', 'mr', 'admin_dept', 'manager']))
             @if(!in_array(Auth::user()->role, ['direktur', 'mr']))

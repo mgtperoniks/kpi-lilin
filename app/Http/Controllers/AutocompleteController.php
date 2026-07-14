@@ -23,8 +23,19 @@ class AutocompleteController extends Controller
 
         $isExact = $request->boolean('exact');
 
-        $items = MdItemMirror::where('status', 'active')
-            ->where(function ($q) use ($query, $isExact) {
+        $activeDepartment = session('selected_department_code', auth()->user()->department_code);
+        $reference = config('masterdata_reference');
+        $allowedCategories = $reference[$activeDepartment] ?? null;
+
+        $itemsQuery = MdItemMirror::where('status', 'active');
+
+        if ($allowedCategories) {
+            $itemsQuery->whereIn('department_code', $allowedCategories);
+        } else {
+            $itemsQuery->where('department_code', $activeDepartment);
+        }
+
+        $items = $itemsQuery->where(function ($q) use ($query, $isExact) {
                 if ($isExact) {
                     $q->where('code', $query);
                 } else {
@@ -105,11 +116,31 @@ class AutocompleteController extends Controller
             return response()->json([]);
         }
 
-        $heatNumbers = \App\Models\MdHeatNumberMirror::where('status', 'active')
-            ->where(function ($q) use ($query) {
+        $activeDepartment = session('selected_department_code', auth()->user()->department_code);
+        $reference = config('masterdata_reference');
+        $allowedCategories = $reference[$activeDepartment] ?? null;
+
+        $heatNumbersQuery = \App\Models\MdHeatNumberMirror::where('status', 'active');
+
+        // Filter Heat Numbers by allowed item department codes (categories)
+        $heatNumbersQuery->whereIn('item_code', function ($sub) use ($activeDepartment, $allowedCategories) {
+            $sub->select('code')
+                ->from('md_items_mirror')
+                ->where('status', 'active');
+            if ($allowedCategories) {
+                $sub->whereIn('department_code', $allowedCategories);
+            } else {
+                $sub->where('department_code', $activeDepartment);
+            }
+        });
+
+        $heatNumbers = $heatNumbersQuery->where(function ($q) use ($query) {
                 $q->where('heat_number', 'like', "%{$query}%")
                     ->orWhere('item_name', 'like', "%{$query}%");
             })
+            ->with(['item' => function ($q) {
+                $q->select('code', 'cycle_time_sec');
+            }])
             ->limit(20)
             ->get(['id', 'heat_number', 'item_code', 'item_name', 'size', 'customer', 'line']);
 

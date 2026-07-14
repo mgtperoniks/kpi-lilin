@@ -138,38 +138,45 @@
 
                 {{-- Row 2: Cycle Time, Target (Auto), Hasil --}}
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div class="space-y-1.5">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cycle Time
-                            (Manual)</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="flex items-center">
-                                <input type="number" name="cycle_time_minutes" x-model="cycleTimeMinutes"
-                                    @input="calculateTarget" required min="0" value="{{ $cycleMinutes }}"
-                                    class="w-full bg-white border-slate-200 rounded-l-xl border-r-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm p-3 font-medium text-slate-700"
-                                    placeholder="0">
-                                <span
-                                    class="bg-slate-50 border border-slate-200 border-l-0 text-slate-500 text-xs font-bold px-3 py-3 rounded-r-xl flex items-center h-full">
-                                    MENIT
-                                </span>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="number" name="cycle_time_seconds" x-model="cycleTimeSeconds"
-                                    @input="calculateTarget" required min="0" max="59" value="{{ $cycleSeconds }}"
-                                    class="w-full bg-white border-slate-200 rounded-l-xl border-r-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm p-3 font-medium text-slate-700"
-                                    placeholder="0">
-                                <span
-                                    class="bg-slate-50 border border-slate-200 border-l-0 text-slate-500 text-xs font-bold px-3 py-3 rounded-r-xl flex items-center h-full">
-                                    DETIK
-                                </span>
+                    @if(!$isProcessTarget)
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cycle Time
+                                (Manual)</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="flex items-center">
+                                    <input type="number" name="cycle_time_minutes" x-model="cycleTimeMinutes"
+                                        @input="calculateTarget" required min="0" value="{{ $cycleMinutes }}"
+                                        class="w-full bg-white border-slate-200 rounded-l-xl border-r-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm p-3 font-medium text-slate-700"
+                                        placeholder="0">
+                                    <span
+                                        class="bg-slate-50 border border-slate-200 border-l-0 text-slate-500 text-xs font-bold px-3 py-3 rounded-r-xl flex items-center h-full">
+                                        MENIT
+                                    </span>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="number" name="cycle_time_seconds" x-model="cycleTimeSeconds"
+                                        @input="calculateTarget" required min="0" max="59" value="{{ $cycleSeconds }}"
+                                        class="w-full bg-white border-slate-200 rounded-l-xl border-r-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm p-3 font-medium text-slate-700"
+                                        placeholder="0">
+                                    <span
+                                        class="bg-slate-50 border border-slate-200 border-l-0 text-slate-500 text-xs font-bold px-3 py-3 rounded-r-xl flex items-center h-full">
+                                        DETIK
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @else
+                        {{-- Dummy columns to keep grid layout balanced when Cycle Time is hidden --}}
+                        <div></div>
+                    @endif
 
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Target (Auto)</label>
                         <input type="number" readonly x-model="targetQty"
                             class="w-full bg-slate-100 border-transparent rounded-xl text-center font-bold text-slate-600 text-lg p-3 cursor-not-allowed">
-                        <p class="text-[10px] text-center text-slate-400">Berdasarkan Cycle Time</p>
+                        <p class="text-[10px] text-center text-slate-400">
+                            <span x-text="isProcessTarget ? 'Berdasarkan Jam Kerja' : 'Berdasarkan Cycle Time'"></span>
+                        </p>
                     </div>
 
                     <div class="space-y-1.5">
@@ -262,13 +269,11 @@
                 targetQty: {{ $log->target_qty }},
                 actualQty: {{ $log->actual_qty }},
                 achievement: {{ $log->achievement_percent }},
+                isProcessTarget: {{ $isProcessTarget ? 'true' : 'false' }},
+                baseTarget: {{ (int) $baseTarget }},
 
                 calculateTarget() {
-                    const mins = parseInt(this.cycleTimeMinutes) || 0;
-                    const secs = parseInt(this.cycleTimeSeconds) || 0;
-                    const totalCycleTimeSec = (mins * 60) + secs;
-
-                    if (!this.timeStart || !this.timeEnd || totalCycleTimeSec <= 0) {
+                    if (!this.timeStart || !this.timeEnd) {
                         this.targetQty = 0;
                         return;
                     }
@@ -276,10 +281,22 @@
                     const start = this.parseTime(this.timeStart);
                     const end = this.parseTime(this.timeEnd);
 
-                    let diffSeconds = (end - start) * 60;
-                    if (diffSeconds < 0) diffSeconds += 24 * 60 * 60; // Handle cross-midnight
+                    let diffMinutes = end - start;
+                    if (diffMinutes < 0) diffMinutes += 1440; // Handle cross-midnight
+                    const workSeconds = diffMinutes * 60;
 
-                    this.targetQty = Math.floor(diffSeconds / totalCycleTimeSec);
+                    if (this.isProcessTarget) {
+                        this.targetQty = Math.floor((this.baseTarget / 25200) * workSeconds);
+                    } else {
+                        const mins = parseInt(this.cycleTimeMinutes) || 0;
+                        const secs = parseInt(this.cycleTimeSeconds) || 0;
+                        const totalCycleTimeSec = (mins * 60) + secs;
+                        if (totalCycleTimeSec <= 0) {
+                            this.targetQty = 0;
+                            return;
+                        }
+                        this.targetQty = Math.floor(workSeconds / totalCycleTimeSec);
+                    }
                     this.calculateAchievement();
                 },
 

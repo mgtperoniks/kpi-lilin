@@ -193,6 +193,11 @@
                             </td>
                             <td class="px-4 py-4">
                                 <div class="font-medium text-gray-900">{{ $row->item->name ?? $row->item_code }}</div>
+                                @if($row->cycle_time_used_sec > 0)
+                                    <div class="text-xs text-slate-500 font-mono mt-0.5">
+                                        CT: {{ floor($row->cycle_time_used_sec / 60) }}m {{ $row->cycle_time_used_sec % 60 }}s
+                                    </div>
+                                @endif
                                 @if($row->heat_number)
                                     <div class="text-xs text-green-600 font-mono mt-0.5">HN: {{ $row->heat_number }}</div>
                                 @endif

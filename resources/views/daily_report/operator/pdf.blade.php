@@ -165,6 +165,9 @@
                     <td class="col-mc">{{ $row->machine_code }}</td>
                     <td>
                         {{ $row->item->name ?? $row->item_code }}
+                        @if($row->cycle_time_used_sec > 0)
+                            <br><small style="color: #666">CT: {{ floor($row->cycle_time_used_sec / 60) }}m {{ $row->cycle_time_used_sec % 60 }}s</small>
+                        @endif
                         @if($row->heat_number)
                             <br><small>HN: {{ $row->heat_number }}</small>
                         @endif

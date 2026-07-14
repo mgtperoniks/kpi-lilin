@@ -28,6 +28,14 @@ class ProductionController extends Controller
 
         $activeDepartment = session('selected_department_code', auth()->user()->department_code);
 
+        // Branch based on active department
+        if ($activeDepartment === '402.2.1') {
+            // Wax Injection (Cetak Lilin) - Cycle Time Engine
+            return view('production.input_cycle_time', [
+                'machines' => $machines,
+            ]);
+        }
+
         // Fetch process targets for the active Lilin department for the current month
         $processTargets = \App\Models\ProcessTarget::where('month', date('n'))
             ->where('year', date('Y'))
@@ -79,36 +87,45 @@ class ProductionController extends Controller
          */
         //dd($request->all());
 
+        $activeDepartment = session('selected_department_code', auth()->user()->department_code);
+        $isProcessTargetEngine = in_array($activeDepartment, ['402.2.2', '402.2.3']);
+
         /**
          * 1. VALIDASI INPUT DASAR
          * Server = Source of Truth
          */
-        $validated = $request->validate([
-            'production_date' => 'required|date',
-            'shift' => 'required|string|max:10',
-
-            'operator_code' => 'required|string',
-            'machine_code' => 'required|string',
-
-            // Bubut (Heat Number) fields
-            'item_code' => 'nullable|string',
-            'heat_number' => 'nullable|string',
-
-            // Lilin (Process) fields
-            'process_id' => 'nullable|integer',
-            'process_name' => 'nullable|string',
-
-            'time_start' => 'required|date_format:H:i',
-            'time_end' => 'required|date_format:H:i',
-
-            'cycle_time_minutes' => 'nullable|integer|min:0',
-            'cycle_time_seconds' => 'nullable|integer|min:0|max:59',
-            'target_qty' => 'nullable|integer|min:0', // Passed from frontend for Lilin
-
-            'actual_qty' => 'required|integer|min:0',
-            'remark' => 'nullable|string|max:50',
-            'note' => 'nullable|string|max:255',
-        ]);
+        if ($isProcessTargetEngine) {
+            $validated = $request->validate([
+                'production_date' => 'required|date',
+                'shift' => 'required|string|max:10',
+                'operator_code' => 'required|string',
+                'machine_code' => 'required|string',
+                'process_id' => 'required|integer',
+                'process_name' => 'nullable|string',
+                'time_start' => 'required|date_format:H:i',
+                'time_end' => 'required|date_format:H:i',
+                'actual_qty' => 'required|integer|min:0',
+                'remark' => 'nullable|string|max:50',
+                'note' => 'nullable|string|max:255',
+            ]);
+        } else {
+            // Wax Injection Cetak Lilin (402.2.1) - Cycle Time Validation
+            $validated = $request->validate([
+                'production_date' => 'required|date',
+                'shift' => 'required|string|max:10',
+                'operator_code' => 'required|string',
+                'machine_code' => 'required|string',
+                'item_code' => 'required|string',
+                'heat_number' => 'required|string',
+                'time_start' => 'required|date_format:H:i',
+                'time_end' => 'required|date_format:H:i',
+                'cycle_time_minutes' => 'required|integer|min:0',
+                'cycle_time_seconds' => 'required|integer|min:0|max:59',
+                'actual_qty' => 'required|integer|min:0',
+                'remark' => 'nullable|string|max:50',
+                'note' => 'nullable|string|max:255',
+            ]);
+        }
 
         $machine = MdMachineMirror::where('code', $validated['machine_code'])
             ->where('status', 'active')
@@ -137,9 +154,6 @@ class ProductionController extends Controller
 
         $workHours = round($workSeconds / 3600, 2);
 
-        $isLilinDepartment = session('selected_department_code', auth()->user()->department_code) &&
-            str_starts_with(session('selected_department_code', auth()->user()->department_code), '402.');
-
         $itemCode = null;
         $heatNumber = null;
         $cycleTimeSec = 0;
@@ -147,8 +161,8 @@ class ProductionController extends Controller
         $actualQty = (int) $validated['actual_qty'];
         $heatNumberDetails = null;
 
-        if ($isLilinDepartment && $validated['process_id']) {
-            // --- LILIN LOGIC (Process Based) ---
+        if ($isProcessTargetEngine) {
+            // --- LILIN LOGIC (Process Based - Engine B) ---
             $processTarget = \App\Models\ProcessTarget::findOrFail($validated['process_id']);
 
             // Override Item Code to be the Process Name so that reports group them properly
@@ -161,15 +175,8 @@ class ProductionController extends Controller
             // Calculate proportional target based on actual workSeconds
             // e.g., 5.6 hours = 5.6/7 of the target. We use floor to round down.
             $targetQty = floor(($processTarget->target_qty / $fullShiftSeconds) * $workSeconds);
-
         } else {
-            // --- BUBUT LOGIC (Heat Number & Item Based) ---
-            if (!$validated['item_code']) {
-                throw ValidationException::withMessages([
-                    'item_code' => 'Item Code is required for non-Lilin departments.',
-                ]);
-            }
-
+            // --- WAX INJECTION LOGIC (Cycle Time Based - Engine A) ---
             $item = MdItemMirror::where('code', $validated['item_code'])
                 ->where('status', 'active')
                 ->firstOrFail();
@@ -199,18 +206,18 @@ class ProductionController extends Controller
             ? round(($actualQty / $targetQty) * 100, 2)
             : 0;
 
-
         /**
          * 7. SIMPAN KE FACT TABLE (IMMUTABLE KPI)
          * NO FK — SNAPSHOT ONLY
          */
         ProductionLog::create([
+            'department_code' => $activeDepartment,
             'production_date' => $validated['production_date'],
             'shift' => $validated['shift'],
 
             'operator_code' => $this->normalizeCode($operator->code),
             'machine_code' => $this->normalizeCode($machine->code),
-            'item_code' => $itemCode, // Process Name if Lilin, Item Code if Bubut
+            'item_code' => $itemCode, // Process Name if Lilin Process Target, Item Code if Cetak Lilin Cycle Time
             'heat_number' => $heatNumber,
             'size' => $heatNumberDetails ? $heatNumberDetails->size : null,
             'customer' => $heatNumberDetails ? $heatNumberDetails->customer : null,

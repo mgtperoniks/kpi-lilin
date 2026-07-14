@@ -152,8 +152,28 @@ class DailyReportController extends Controller
             abort(403, 'Data sudah dikunci. Tidak dapat mengedit.');
         }
 
+        $isProcessTarget = in_array($log->department_code, ['402.2.2', '402.2.3']) || (!$log->department_code && $log->cycle_time_used_sec == 0);
+
+        $baseTarget = 0;
+        if ($isProcessTarget) {
+            $processTarget = \App\Models\ProcessTarget::where('department_code', $log->department_code ?: '402.2.2')
+                ->where('month', date('n', strtotime($log->production_date)))
+                ->where('year', date('Y', strtotime($log->production_date)))
+                ->where('process_name', $log->item_code)
+                ->first();
+            if ($processTarget) {
+                $baseTarget = $processTarget->target_qty;
+            } else {
+                if ($log->work_hours > 0) {
+                    $baseTarget = ($log->target_qty / ($log->work_hours * 3600)) * 25200;
+                }
+            }
+        }
+
         return view('daily_report.operator.edit', [
             'log' => $log,
+            'isProcessTarget' => $isProcessTarget,
+            'baseTarget' => $baseTarget,
         ]);
     }
 
@@ -174,16 +194,29 @@ class DailyReportController extends Controller
             abort(403, 'Data sudah dikunci. Tidak dapat mengedit.');
         }
 
-        $validated = $request->validate([
-            'shift' => 'required|string|max:10',
-            'time_start' => 'required|date_format:H:i',
-            'time_end' => 'required|date_format:H:i',
-            'cycle_time_minutes' => 'required|integer|min:0',
-            'cycle_time_seconds' => 'required|integer|min:0|max:59',
-            'actual_qty' => 'required|integer|min:0',
-            'remark' => 'nullable|string|max:50',
-            'note' => 'nullable|string|max:255',
-        ]);
+        $isProcessTarget = in_array($log->department_code, ['402.2.2', '402.2.3']) || (!$log->department_code && $log->cycle_time_used_sec == 0);
+
+        if ($isProcessTarget) {
+            $validated = $request->validate([
+                'shift' => 'required|string|max:10',
+                'time_start' => 'required|date_format:H:i',
+                'time_end' => 'required|date_format:H:i',
+                'actual_qty' => 'required|integer|min:0',
+                'remark' => 'nullable|string|max:50',
+                'note' => 'nullable|string|max:255',
+            ]);
+        } else {
+            $validated = $request->validate([
+                'shift' => 'required|string|max:10',
+                'time_start' => 'required|date_format:H:i',
+                'time_end' => 'required|date_format:H:i',
+                'cycle_time_minutes' => 'required|integer|min:0',
+                'cycle_time_seconds' => 'required|integer|min:0|max:59',
+                'actual_qty' => 'required|integer|min:0',
+                'remark' => 'nullable|string|max:50',
+                'note' => 'nullable|string|max:255',
+            ]);
+        }
 
         // Re-calculate work hours
         $startSeconds = strtotime($validated['time_start']);
@@ -201,15 +234,39 @@ class DailyReportController extends Controller
 
         $workHours = round($workSeconds / 3600, 2);
 
-        // Re-calculate cycle time
-        $cycleTimeSec = ($validated['cycle_time_minutes'] * 60) + $validated['cycle_time_seconds'];
+        $cycleTimeSec = 0;
+        $targetQty = 0;
 
-        if ($cycleTimeSec <= 0) {
-            return back()->withErrors(['cycle_time_seconds' => 'Total Cycle Time tidak boleh 0 detik.'])->withInput();
+        if ($isProcessTarget) {
+            // Find base target and scale proportionally
+            $baseTarget = 0;
+            $processTarget = \App\Models\ProcessTarget::where('department_code', $log->department_code ?: '402.2.2')
+                ->where('month', date('n', strtotime($log->production_date)))
+                ->where('year', date('Y', strtotime($log->production_date)))
+                ->where('process_name', $log->item_code)
+                ->first();
+            if ($processTarget) {
+                $baseTarget = $processTarget->target_qty;
+            } else {
+                if ($log->work_hours > 0) {
+                    $baseTarget = ($log->target_qty / ($log->work_hours * 3600)) * 25200;
+                }
+            }
+            $targetQty = floor(($baseTarget / 25200) * $workSeconds);
+        } else {
+            // Re-calculate cycle time
+            $cycleTimeMinutes = $validated['cycle_time_minutes'] ?? 0;
+            $cycleTimeSeconds = $validated['cycle_time_seconds'] ?? 0;
+            $cycleTimeSec = ($cycleTimeMinutes * 60) + $cycleTimeSeconds;
+
+            if ($cycleTimeSec <= 0) {
+                return back()->withErrors(['cycle_time_seconds' => 'Total Cycle Time tidak boleh 0 detik.'])->withInput();
+            }
+
+            // Re-calculate target & achievement
+            $targetQty = intdiv($workSeconds, $cycleTimeSec);
         }
 
-        // Re-calculate target & achievement
-        $targetQty = intdiv($workSeconds, $cycleTimeSec);
         $actualQty = (int) $validated['actual_qty'];
         $achievementPercent = $targetQty > 0
             ? round(($actualQty / $targetQty) * 100, 2)
