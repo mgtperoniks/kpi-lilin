@@ -78,18 +78,132 @@ class ProductionController extends Controller
         if (auth()->user()->isReadOnly()) {
             return redirect()->back()->with('error', 'Anda tidak memiliki hak akses untuk menyimpan data (Read-Only).');
         }
-        /**
-         * ===============================
-         * DEBUG PALING CEPAT (SEMENTARA)
-         * ===============================
-         * AKTIFKAN JIKA ADA ERROR FORM
-         * Setelah ketemu masalah → HAPUS BARIS INI
-         */
-        //dd($request->all());
 
         $activeDepartment = session('selected_department_code', auth()->user()->department_code);
         $isProcessTargetEngine = in_array($activeDepartment, ['402.2.2', '402.2.3']);
 
+        if ($activeDepartment === '402.2.1') {
+            // WAX INJECTION MULTI-ROW ENTRY (Cycle Time Engine)
+            $rows = array_filter($request->input('rows', []), function ($row) {
+                return !empty($row['heat_number']);
+            });
+
+            if (empty($rows)) {
+                throw ValidationException::withMessages([
+                    'rows' => 'Minimal harus mengisi satu baris data produksi yang valid.',
+                ]);
+            }
+
+            // Validate header inputs
+            $validatedHeader = $request->validate([
+                'production_date' => 'required|date',
+                'shift' => 'required|string|max:10',
+                'operator_code' => 'required|string',
+                'machine_code' => 'required|string',
+            ]);
+
+            // Validate detail rows
+            $validator = \Illuminate\Support\Facades\Validator::make(['rows' => $rows], [
+                'rows.*.heat_number' => 'required|string',
+                'rows.*.item_code' => 'required|string',
+                'rows.*.time_start' => 'required|date_format:H:i',
+                'rows.*.time_end' => 'required|date_format:H:i',
+                'rows.*.cycle_time_minutes' => 'required|integer|min:0',
+                'rows.*.cycle_time_seconds' => 'required|integer|min:0|max:59',
+                'rows.*.actual_qty' => 'required|integer|min:0',
+                'rows.*.remark' => 'nullable|string|max:50',
+                'rows.*.note' => 'nullable|string|max:255',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+
+            $machine = MdMachineMirror::where('code', $validatedHeader['machine_code'])
+                ->where('status', 'active')
+                ->firstOrFail();
+
+            $operator = MdOperatorMirror::withoutGlobalScope(\App\Models\Scopes\DepartmentScope::class)
+                ->where('code', $validatedHeader['operator_code'])
+                ->where('status', 'active')
+                ->firstOrFail();
+
+            \Illuminate\Support\Facades\DB::transaction(function () use ($rows, $validatedHeader, $machine, $operator, $activeDepartment) {
+                foreach ($rows as $row) {
+                    $item = MdItemMirror::where('code', $row['item_code'])
+                        ->where('status', 'active')
+                        ->firstOrFail();
+
+                    $heatNumber = $row['heat_number'];
+                    $heatNumberDetails = \App\Models\MdHeatNumberMirror::where('heat_number', $heatNumber)->first();
+
+                    $startSeconds = strtotime($row['time_start']);
+                    $endSeconds = strtotime($row['time_end']);
+
+                    if ($endSeconds < $startSeconds) {
+                        $endSeconds += 86400; // Cross-day shift
+                    }
+
+                    $workSeconds = $endSeconds - $startSeconds;
+                    if ($workSeconds <= 0) {
+                        throw ValidationException::withMessages([
+                            'rows' => "Jam selesai pada Heat Number {$heatNumber} harus lebih besar dari jam mulai.",
+                        ]);
+                    }
+
+                    $workHours = round($workSeconds / 3600, 2);
+
+                    $cycleTimeMinutes = (int) ($row['cycle_time_minutes'] ?? 0);
+                    $cycleTimeSeconds = (int) ($row['cycle_time_seconds'] ?? 0);
+                    $cycleTimeSec = ($cycleTimeMinutes * 60) + $cycleTimeSeconds;
+
+                    if ($cycleTimeSec <= 0) {
+                        throw ValidationException::withMessages([
+                            'rows' => "Total Cycle Time pada Heat Number {$heatNumber} tidak boleh 0 detik.",
+                        ]);
+                    }
+
+                    $targetQty = intdiv($workSeconds, $cycleTimeSec);
+                    $actualQty = (int) $row['actual_qty'];
+
+                    $achievementPercent = $targetQty > 0
+                        ? round(($actualQty / $targetQty) * 100, 2)
+                        : 0;
+
+                    ProductionLog::create([
+                        'department_code' => $activeDepartment,
+                        'production_date' => $validatedHeader['production_date'],
+                        'shift' => $validatedHeader['shift'],
+                        'operator_code' => $this->normalizeCode($operator->code),
+                        'machine_code' => $this->normalizeCode($machine->code),
+                        'item_code' => $this->normalizeCode($item->code),
+                        'heat_number' => $heatNumber,
+                        'size' => $heatNumberDetails ? $heatNumberDetails->size : null,
+                        'customer' => $heatNumberDetails ? $heatNumberDetails->customer : null,
+                        'line' => $heatNumberDetails ? $heatNumberDetails->line : null,
+                        'time_start' => $row['time_start'],
+                        'time_end' => $row['time_end'],
+                        'work_hours' => $workHours,
+                        'cycle_time_used_sec' => $cycleTimeSec,
+                        'target_qty' => $targetQty,
+                        'actual_qty' => $actualQty,
+                        'achievement_percent' => $achievementPercent,
+                        'remark' => $row['remark'] ?? null,
+                        'note' => $row['note'] ?? null,
+                    ]);
+                }
+            });
+
+            // Regenerate KPI (Daily Recap)
+            \App\Services\DailyKpiService::generateOperatorDaily($validatedHeader['production_date']);
+            \App\Services\DailyKpiService::generateMachineDaily($validatedHeader['production_date']);
+
+            return redirect()
+                ->back()
+                ->with('success', "Data produksi a.n. {$operator->name} berhasil disimpan.");
+        }
+
+        // --- ORIGINAL SINGLE ROW LOGIC FOR OTHER DEPARTMENTS ---
         /**
          * 1. VALIDASI INPUT DASAR
          * Server = Source of Truth
@@ -109,7 +223,7 @@ class ProductionController extends Controller
                 'note' => 'nullable|string|max:255',
             ]);
         } else {
-            // Wax Injection Cetak Lilin (402.2.1) - Cycle Time Validation
+            // Wax Injection Cetak Lilin (402.2.1) - Cycle Time Validation (Should not hit normally now, but kept for fallback)
             $validated = $request->validate([
                 'production_date' => 'required|date',
                 'shift' => 'required|string|max:10',

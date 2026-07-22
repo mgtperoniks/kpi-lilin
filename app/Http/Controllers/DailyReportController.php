@@ -58,13 +58,17 @@ class DailyReportController extends Controller
     public function operatorIndex()
     {
         // Ambil summary per tanggal
-        $dates = ProductionLog::selectRaw('
+        $dates = ProductionLog::selectRaw("
                 production_date, 
                 SUM(actual_qty) as total_qty, 
                 SUM(target_qty) as total_target, 
                 AVG(achievement_percent) as avg_kpi,
-                COUNT(*) as total_logs
-            ')
+                COUNT(*) as total_logs,
+                SUM(CASE WHEN remark = 'FL SS' THEN actual_qty ELSE 0 END) as qty_fl_ss,
+                SUM(CASE WHEN remark = 'PF SS' THEN actual_qty ELSE 0 END) as qty_pf_ss,
+                SUM(CASE WHEN remark = 'FL BS' THEN actual_qty ELSE 0 END) as qty_fl_bs,
+                SUM(CASE WHEN remark = 'PF BS' THEN actual_qty ELSE 0 END) as qty_pf_bs
+            ")
             ->groupBy('production_date')
             ->orderBy('production_date', 'desc')
             ->get();

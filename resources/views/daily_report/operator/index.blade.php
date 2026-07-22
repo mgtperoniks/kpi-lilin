@@ -40,6 +40,29 @@
                         </div>
                     </div>
 
+                    {{-- Production Mix Summary Badge Row --}}
+                    <div class="flex gap-4 shrink-0 mx-6 bg-slate-50/50 p-2.5 rounded-lg border border-slate-100">
+                        <div class="text-center px-1">
+                            <span class="text-[8px] font-bold text-indigo-500 uppercase tracking-wider block">FL SS</span>
+                            <span class="text-xs font-extrabold text-slate-700">{{ number_format($row->qty_fl_ss) }} <span class="text-[9px] text-slate-400 font-normal">pcs</span></span>
+                        </div>
+                        <div class="w-px h-6 bg-slate-200"></div>
+                        <div class="text-center px-1">
+                            <span class="text-[8px] font-bold text-indigo-500 uppercase tracking-wider block">PF SS</span>
+                            <span class="text-xs font-extrabold text-slate-700">{{ number_format($row->qty_pf_ss) }} <span class="text-[9px] text-slate-400 font-normal">pcs</span></span>
+                        </div>
+                        <div class="w-px h-6 bg-slate-200"></div>
+                        <div class="text-center px-1">
+                            <span class="text-[8px] font-bold text-slate-500 uppercase tracking-wider block">FL BS</span>
+                            <span class="text-xs font-extrabold text-slate-700">{{ number_format($row->qty_fl_bs) }} <span class="text-[9px] text-slate-400 font-normal">pcs</span></span>
+                        </div>
+                        <div class="w-px h-6 bg-slate-200"></div>
+                        <div class="text-center px-1">
+                            <span class="text-[8px] font-bold text-slate-500 uppercase tracking-wider block">PF BS</span>
+                            <span class="text-xs font-extrabold text-slate-700">{{ number_format($row->qty_pf_bs) }} <span class="text-[9px] text-slate-400 font-normal">pcs</span></span>
+                        </div>
+                    </div>
+
                     <div class="flex items-center gap-6 text-right">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Total Output</p>
