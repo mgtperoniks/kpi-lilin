@@ -66,8 +66,8 @@ class DailyReportController extends Controller
                 COUNT(*) as total_logs,
                 SUM(CASE WHEN remark = 'FL SS' THEN actual_qty ELSE 0 END) as qty_fl_ss,
                 SUM(CASE WHEN remark = 'PF SS' THEN actual_qty ELSE 0 END) as qty_pf_ss,
-                SUM(CASE WHEN remark = 'FL BS' THEN actual_qty ELSE 0 END) as qty_fl_bs,
-                SUM(CASE WHEN remark = 'PF BS' THEN actual_qty ELSE 0 END) as qty_pf_bs
+                SUM(CASE WHEN remark = 'FL BESI' THEN actual_qty ELSE 0 END) as qty_fl_bs,
+                SUM(CASE WHEN remark = 'PF BESI' THEN actual_qty ELSE 0 END) as qty_pf_bs
             ")
             ->groupBy('production_date')
             ->orderBy('production_date', 'desc')
